@@ -1,5 +1,5 @@
 # my-vim-env
-bob chorba nz (IYKYK)
+***bob chorba nz (IYKYK)***
 
 This is a repository I use (will) to track my env config history because everything gets broken all the time by pressing a single key by accident.
 
