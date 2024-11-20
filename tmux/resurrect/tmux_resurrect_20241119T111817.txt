@@ -1,0 +1,9 @@
+pane	OS-hw	0	0	:	0	LAPTOP-500UJ0I9	:/home/bananc	1	zsh	:
+pane	OS-hw	1	0	:-	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/01-lseek-decode	0	nvim	:/tmp/.mount_nvim71bIDE/usr/bin/nvim lseek-decode.c
+pane	OS-hw	1	0	:-	1	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/01-lseek-decode	1	zsh	:
+pane	OS-hw	2	1	:*	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/02-head	1	nvim	:/tmp/.mount_nvimqLDA48/usr/bin/nvim head.c
+pane	OS-hw	2	1	:*	1	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/02-head	0	zsh	:
+window	OS-hw	0	:main	0	:	b67d,188x51,0,0,0	off
+window	OS-hw	1	:zad-1	0	:-	492f,188x51,0,0{94x51,0,0,1,93x51,95,0,4}	off
+window	OS-hw	2	:zad-2	1	:*	c932,188x51,0,0{94x51,0,0,2,93x51,95,0,3}	off
+state	OS-hw	

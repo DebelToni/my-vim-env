@@ -1,0 +1,9 @@
+pane	OS-hw	0	1	:*	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/01-lseek-decode	1	bash	:bash /home/bananc/.tmux/plugins/tmux-resurrect/scripts/save.sh
+pane	OS-hw	1	0	:	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/01-lseek-decode	1	nvim	:/tmp/.mount_nvimQN2Lmu/usr/bin/nvim
+pane	OS-hw	1	0	:	1	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/01-lseek-decode	0	zsh	:
+pane	OS-hw	2	0	:-	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/02-head	1	nvim	:/tmp/.mount_nvimGSuECS/usr/bin/nvim
+pane	OS-hw	2	0	:-	1	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/02-head	0	zsh	:
+window	OS-hw	0	:main	1	:*	b67d,188x51,0,0,0	off
+window	OS-hw	1	:01	0	:	3f4e,188x51,0,0{93x51,0,0,1,94x51,94,0,2}	off
+window	OS-hw	2	:2	0	:-	3f57,188x51,0,0{93x51,0,0,3,94x51,94,0,4}	off
+state	OS-hw	

@@ -1,0 +1,13 @@
+pane	2	0	1	:*	0	LAPTOP-500UJ0I9	:/home/bananc/.config/nvim	0	zsh	:
+pane	2	0	1	:*	1	LAPTOP-500UJ0I9	:/home/bananc/.config/nvim	1	nvim	:/tmp/.mount_nvimwLM5wl/usr/bin/nvim lua/config/myscripts/code_present_hide.lua
+pane	2	0	1	:*	2	LAPTOP-500UJ0I9	:/home/bananc/.config/nvim	0	nvim	:/tmp/.mount_nvim2vqVg8/usr/bin/nvim
+pane	OS-hw	0	1	:*	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni	1	zsh	:
+pane	OS-hw	1	0	:	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/01-lseek-decode	1	nvim	:/tmp/.mount_nvim71bIDE/usr/bin/nvim lseek-decode.c
+pane	OS-hw	1	0	:	1	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/01-lseek-decode	0	zsh	:
+pane	OS-hw	2	0	:-	0	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/02-head	1	nvim	:/tmp/.mount_nvimqLDA48/usr/bin/nvim head.c
+pane	OS-hw	2	0	:-	1	LAPTOP-500UJ0I9	:/home/bananc/Documents/c-files/OS/os-tues-2024-2025-11b-hw01-DebelToni/02-head	0	zsh	:
+window	2	0	:nvim	1	:*	a607,157x43,0,0{78x43,0,0[78x21,0,0,11,78x21,0,22,15],78x43,79,0,12}	:
+window	OS-hw	0	:main	1	:*	bb3d,157x43,0,0,0	off
+window	OS-hw	1	:zad-1	0	:	4134,157x43,0,0{78x43,0,0,1,78x43,79,0,4}	off
+window	OS-hw	2	:zad-2	0	:-	c137,157x43,0,0{78x43,0,0,2,78x43,79,0,3}	off
+state	2	
