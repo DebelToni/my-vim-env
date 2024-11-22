@@ -1,1 +1,2 @@
 - fix powershell.exe not loeading after terminal reboot
+- somehow list down the process of making silicon work on wsl + windows for future generations

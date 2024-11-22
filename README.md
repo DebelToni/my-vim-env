@@ -11,3 +11,5 @@ My crazy setup:
 - Tmux
 - My custom AHK / Kanata scripts to emulate Vim motions outside of terminal
 - ...
+
+I have all my configs for all the things listed in the repo folder on my wsl partition and to actually use them i have created symbolic links all over my system so it can access them - it is a super goofy solution but it works so why not.
