@@ -1,2 +1,3 @@
 - fix powershell.exe not loeading after terminal reboot
 - somehow list down the process of making silicon work on wsl + windows for future generations
+- FIX CONTROL STILL BEING PRESSED AFTER CAPS - bug with the long ahk script or poor scriptwriting
