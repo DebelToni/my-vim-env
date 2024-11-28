@@ -9,6 +9,7 @@ return {
 		wslclipboard = 'always',
 		wslclipboardcopy = 'keep',
 	})
+
 	end
 }
 

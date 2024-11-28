@@ -1,2 +1,0 @@
-echo 'export PATH="$PATH:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/"' >> ~/.bashrc
-source ~/.bashrc

@@ -7,7 +7,13 @@ Features of toni_macro.ahk:
 
 - Binds CAPS key to tap-hold between ESC and CTRL   :in cmd
 
-- While holding CAPS allows you to do these things  :outside of cmd
+From here I made 2 variations of integrating vim outside of terminal:
+1. Uses normal mode keybinds that i added while holding CAPS - vim-everywhere-hold-caps.ahk
+2. Actually switches between normal and insert mode with CAPS - vim-modes-integrated-windows.ahk. There is a little blue dot at the top of the screen to indicate if you are in normal mode outside of cmd (and gets dissabled in cmd).
+
+-Either way the functions are the same - when in normal mode / holding CAPS outside of cmd:
+    - i to toggle back to insert mode which is basic keyboard func
+    - a to toggle back to insert and mode 1 space to the right
     - basic vim motion with h j k l
     - y for copy
     - p for paste
@@ -16,13 +22,19 @@ Features of toni_macro.ahk:
     - v for selecting 
     - e end of word and select it
     - d for delete and copy (cut)
-    - i for beggining of line (or I)
-    - a for end of line (or R)
+    - dd (200ms) for cut/delete line and go to the next
+    - I for beggining of line and toggle to insert mode 
+    - A for end of line and toggle to insert mode 
+    - o for new line below
+    - O for new line above
 
     - moves the mouse with m , . /  by speed'
     - the buttons 1 2 3 4 5 change the speed' (3 is default)
     - space for mouse left click 
     - alt for mouse right click 
+
+    future addons:
+    - probably disable the mouse functions and make it so you move with set amound with numbers and h j k l
 
 *My personal favorite:*
 - Win + Alt + Z     ->      checks if outside of inside terminal again for:

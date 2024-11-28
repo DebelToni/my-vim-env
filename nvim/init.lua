@@ -3,10 +3,9 @@ vim.g.maplocalleader = "\\"
 
 --Todo: make file for require
 require("config.lazy")
-require("config.plugins.which_key")
 require("config.myscripts.code_conceal")
 require("config.myscripts.code_hide")
-
+require("config.plugins.which-key")
 require("config.keybinds")
 
 --Todo: make file for customisaion

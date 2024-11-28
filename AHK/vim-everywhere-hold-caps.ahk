@@ -56,8 +56,10 @@ CapsLockHold:
     +J::Up
     +K::Down
     +L::Right
-    i::Home
-    a::End
+    ;i::Home
+    ;a::End
+    o:: Send {Home}{Enter}
+    +O:: Send {End}{Enter}{Up}
     I::Home
     A::End
     v::RShift
@@ -70,7 +72,22 @@ CapsLockHold:
     e:: Send ^+{Right} ; end of the word and select
     y:: Send {Ctrl down}c{Ctrl up}
     p:: Send {Ctrl down}v{Ctrl up}
-    d:: Send {Ctrl down}x{Ctrl up}
+   ;d:: Send {Ctrl down}x{Ctrl up}
+	d::
+        if (isDoublePress) {
+            ; Reset double press state and perform double-press action
+            isDoublePress := false
+            SetTimer, ResetPressState, Off
+            Send {Home}{Shift down}{End}{Shift up}{Ctrl down}x{Ctrl up}{Delete}
+        } else {
+            ; Set double press state and timer
+            isDoublePress := true
+            SetTimer, ResetPressState, -200
+            ; Perform the first action (Ctrl+X)
+            Send ^x
+        }
+	return
+
     1::speed = 10
     2::speed = 25
     3::speed = 50
@@ -78,6 +95,19 @@ CapsLockHold:
     5::speed = 150
     Space::Click
     Alt::Click Right
+
+
+
+isDoublePress := false
+pressTimer := 0
+
+ResetPressState:
+    isDoublePress := false
+    Return
+
+
+
+
 #If
 Move_mouse_down()
 {
