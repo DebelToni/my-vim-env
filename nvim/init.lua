@@ -1,6 +1,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-
+ 
 --Todo: make file for require
 require("config.lazy")
 require("config.myscripts.code_conceal")
@@ -13,4 +13,4 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 vim.opt.tabstop = 4
-
+vim.o.tabstop = 4

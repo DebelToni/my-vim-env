@@ -1,4 +1,4 @@
-return {
+return {{
 		'nvim-telescope/telescope.nvim', 
 		version = '0.1.x',
 		dependencies = { 'nvim-lua/plenary.nvim' },
@@ -19,10 +19,25 @@ return {
 				["<S-x>"] = require('telescope.actions').select_horizontal,
 				["<S-v>"] = require('telescope.actions').select_vertical,
 				["<S-t>"] = require('telescope.actions').select_tab,
-			
 			["S-v"] = false,
 			  },
 			},
 		  }
-		end	
+		end
+},
+{
+		"nvim-telescope/telescope-ui-select.nvim",
+		config = function()
+				require("telescope").setup({
+						extensions = {
+								["ui-select"] = {
+										require("telescope.themes").get_dropdown{}
+								}
+						}
+				})
+				require("telescope").load_extension("ui-select")
+		end
+
+}
+
 }

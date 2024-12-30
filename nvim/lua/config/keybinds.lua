@@ -6,11 +6,11 @@ local set_keymap = function(mode, lhs, rhs, opts)
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
   end
   
-set_keymap('n', 'j', 'k', { desc = "Move up" })
-set_keymap('v', 'j', 'k', { desc = "Move up in visual mode" })
-
-set_keymap('n', 'k', 'j', { desc = "Move down" })
-set_keymap('v', 'k', 'j', { desc = "Move down in visual mode" })
+-- set_keymap('n', 'j', 'k', { desc = "Move up" })
+-- set_keymap('v', 'j', 'k', { desc = "Move up in visual mode" })
+--
+-- set_keymap('n', 'k', 'j', { desc = "Move down" })
+-- set_keymap('v', 'k', 'j', { desc = "Move down in visual mode" })
 
 set_keymap('n', ';', ':', {desc = "Enter command-line with ;"})
 
@@ -31,8 +31,10 @@ set_keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", {desc = "Help tags
 
 --Tmux
 set_keymap("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", {desc = "Nav left"})
-set_keymap("n", "<C-j>", "<cmd>TmuxNavigateUp<cr>", {desc = "Nav up"})
-set_keymap("n", "<C-k>", "<cmd>TmuxNavigateDown<cr>", {desc = "Nav down"})
+set_keymap("n", "<C-k>", "<cmd>TmuxNavigateUp<cr>", {desc = "Nav up"})
+-- set_keymap("n", "<C-j>", "<cmd>TmuxNavigateUp<cr>", {desc = "Nav up"})
+set_keymap("n", "<C-j>", "<cmd>TmuxNavigateDown<cr>", {desc = "Nav down"})
+-- set_keymap("n", "<C-k>", "<cmd>TmuxNavigateDown<cr>", {desc = "Nav down"})
 set_keymap("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>", {desc = "Nav right"})
 
 --vim.api.nvim_set_keymap('v', '<leader>s', [[:lua require('silicon').visualise_api({})<CR>]], { noremap = true, silent = true })
@@ -41,3 +43,14 @@ set_keymap("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>", {desc = "Nav right"})
 
 --vim.api.nvim_set_keymap('n', '<F5>', ':lua ToggleHideTaggedLines()<CR>', { noremap = true, silent = true })
 
+-- vim.api.nvim_set_keymap('n', '<A-j>', ':m-2<CR>==', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<A-k>', ':m+1<CR>==', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('v', '<A-k>', ":m'>+<CR>gv=gv", { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('v', '<A-j>', ":m'<-2<CR>gv=gv", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-k>', ':m-2<CR>==', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-j>', ':m+1<CR>==', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<A-j>', ":m'>+<CR>gv=gv", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<A-k>', ":m'<-2<CR>gv=gv", { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<leader>bb', ':b#<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
