@@ -63,6 +63,7 @@ CapsLockHold:
     }
     Return
 
+;#If WinActive(NeovimWindow)
 #If WinActive(NeovimWindow) && CapsIsHeld
     *CapsLock Up::
         Send {Ctrl Up}
@@ -73,12 +74,12 @@ CapsLockHold:
 ; outside of terminal
 #If !WinActive(NeovimWindow) && (Mode = "NORMAL") 
     h::Left
-    j::Up
-    k::Down
+    k::Up
+    j::Down
     l::Right
     +H::Left
-    +J::Up
-    +K::Down
+    +K::Up
+    +J::Down
     +L::Right
     i:: Mode := "INSERT", UpdateModeOverlay()
 	a::
@@ -88,21 +89,27 @@ CapsLockHold:
 	UpdateModeOverlay()
 	return
 	}
-    o:: Send {Home}{Enter}
-    +O:: Send {End}{Enter}{Up}
+    o:: Send {End}{Enter}
+    +O:: 
+    	Send {Home}    
+    	Sleep 50       
+    	Send {Enter}
+    	Sleep 50             
+                 Send {Up}
+    return
     +I:: 
 	{
 	Send {Home}
 	Mode := "INSERT"
 	UpdateModeOverlay()
-	return 
+	return
 	}
     +A:: 
 	{
 	Send {End}
 	Mode := "INSERT"
 	UpdateModeOverlay()
-	return 
+	return
 	}
 	v::
 {
@@ -122,6 +129,9 @@ CapsLockHold:
     e:: Send ^+{Right} ; end of the word and select
     y:: Send {Ctrl down}c{Ctrl up}
     p:: Send {Ctrl down}v{Ctrl up}
+	u:: Send {Ctrl down}z{Ctrl up}
+	^r:: Send {Ctrl down}y{Ctrl up}
+	;r:: Send {Ctrl down}y{Ctrl up}
     ;d:: Send {Ctrl down}x{Ctrl up}
 	d::
         if (isDoublePress) {
@@ -205,4 +215,3 @@ return
 }
 
 return
-

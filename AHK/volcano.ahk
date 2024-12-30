@@ -47,6 +47,13 @@ return
 #!p::
     SetEmojiAndPaste(Chr(0xD83D) . Chr(0xDE4F), "Pray")
 return
-#!4::
-    SetEmojiAndPaste("asd", "word")
+#!t::
+    SetEmojiAndPaste(Chr(0xD83D) . Chr(0xDC4D), "ThumbsUp")
 return
+#!c::
+    SetEmojiAndPaste(Chr(0xD83D) . Chr(0xDE2D), "Cry")
+return
+#!s::
+    SetEmojiAndPaste(Chr(0xD83D) . Chr(0xDC80), "Skull")
+return
+
