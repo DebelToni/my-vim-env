@@ -54,3 +54,5 @@ vim.api.nvim_set_keymap('v', '<A-k>', ":m'<-2<CR>gv=gv", { noremap = true, silen
 
 vim.api.nvim_set_keymap('n', '<leader>bb', ':b#<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
+
+set_keymap('n', 'V', '<C-v>', { desc = "Visual block mode" })
