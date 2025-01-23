@@ -20,6 +20,6 @@ return {
         vim.cmd("Neotree focus")
       end
     end, { desc = "Toggle focus/unfocus Neo-tree" })
-    vim.keymap.set("n", "<leader>b", "<C-w>p", { desc = "Go back to previous window" })
+    -- vim.keymap.set("n", "<leader>b", "<C-w>p", { desc = "Go back to previous window" })
 	end,
 }
