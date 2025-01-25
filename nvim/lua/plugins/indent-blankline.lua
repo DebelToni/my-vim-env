@@ -1,0 +1,61 @@
+return {
+	"lukas-reineke/indent-blankline.nvim",
+	main = "ibl",
+	---@module "ibl"
+	---@type ibl.config
+	opts = {},
+	config = function()
+		local highlight = {
+			"RainbowRed",
+			"RainbowYellow",
+			"RainbowBlue",
+			"RainbowOrange",
+			"RainbowGreen",
+			"RainbowViolet",
+			"RainbowCyan",
+		}
+
+		local hooks = require("ibl.hooks")
+		-- create the highlight groups in the highlight setup hook, so they are reset
+		-- every time the colorscheme changes
+		hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+			vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+			vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+			vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+			vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+			vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+			vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+			vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+		end)
+
+		require("ibl").setup({ indent = { highlight = highlight } })
+	end,
+}
+
+-- local M = { }
+--
+--
+-- M.is_enabled = false -- This tracks whether the feature is enabled or not
+--
+-- -- Define the toggle function
+-- M.toggle_feature = function()
+--     M.is_enabled = not M.is_enabled -- Toggle the state
+--     if M.is_enabled then
+--         vim.notify("Feature enabled!", vim.log.levels.INFO)
+--         -- Add your feature logic here, e.g., enabling virtual text
+--         vim.api.nvim_buf_set_option(0, "cursorline", true)
+--     else
+--         vim.notify("Feature disabled!", vim.log.levels.INFO)
+--         -- Add logic for disabling the feature
+--         vim.api.nvim_buf_set_option(0, "cursorline", false)
+--     end
+-- end
+--
+-- -- Create a user command to toggle the feature
+-- vim.api.nvim_create_user_command("ToggleFeature", function()
+--     M.toggle_feature()
+-- end, {})
+--
+-- -- Return the module
+-- return M
+--
