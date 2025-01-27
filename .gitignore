@@ -1,2 +1,3 @@
 tmux/plugins/
 nvim/pack/github/start/copilot.vim
+nvim/lazy-lock.json

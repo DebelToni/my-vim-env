@@ -166,6 +166,8 @@ source() {
   fi
 }
 
+alias lgit='lazygit'
+alias ldocker='lazydocker'
 
 eval "$(zoxide init --cmd cd zsh)"
 
