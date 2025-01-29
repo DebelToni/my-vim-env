@@ -79,7 +79,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 	git
-	zsh-autosuggestions
+	# zsh-autosuggestions
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -180,6 +180,9 @@ alias rpi-tmux='tmux new-window "ssh -t toni@192.168.100.193 tmux attach-session
 if [[ -z "$TMUX" ]]; then
     tmux new-session \; run-shell "~/.tmux/plugins/tmux-resurrect/scripts/restore.sh"
 fi
+
+eval $(thefuck --alias)
+eval $(thefuck --alias fk)
 
 # Setup auto install todo:
 # 1. Install zsh
