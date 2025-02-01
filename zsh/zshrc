@@ -127,7 +127,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 alias bat="batcat"
 #
@@ -202,3 +201,7 @@ eval $(thefuck --alias fk)
 # 16. Install lazydocker
 # 17. Install thefuck
 # 18. Install yazi
+# 19. Install glow - https://github.com/charmbracelet/glow
+
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

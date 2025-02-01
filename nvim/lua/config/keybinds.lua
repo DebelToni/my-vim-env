@@ -57,7 +57,9 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, si
 
 set_keymap('n', 'V', '<C-v>', { desc = "Visual block mode" })
 
-vim.api.nvim_set_keymap('n', '<M-Up>', ':res +1<CR>', { noremap = true, silent = true, desc = "Resize window up" })
-vim.api.nvim_set_keymap('n', '<M-Down>', ':res -1<CR>', { noremap = true, silent = true, desc = "Resize window down" })
-vim.api.nvim_set_keymap('n', '<M-Left>', ':vertical resize -1<CR>', { noremap = true, silent = true, desc = "Resize window left" })
-vim.api.nvim_set_keymap('n', '<M-Right>', ':vertical resize +1<CR>', { noremap = true, silent = true, desc = "Resize window right" })
+vim.api.nvim_set_keymap('n', '<M-k>', ':res +1<CR>', { noremap = true, silent = true, desc = "Resize window up" })
+vim.api.nvim_set_keymap('n', '<M-j>', ':res -1<CR>', { noremap = true, silent = true, desc = "Resize window down" })
+vim.api.nvim_set_keymap('n', '<M-h>', ':vertical resize -1<CR>', { noremap = true, silent = true, desc = "Resize window left" })
+vim.api.nvim_set_keymap('n', '<M-l>', ':vertical resize +1<CR>', { noremap = true, silent = true, desc = "Resize window right" })
+
+-- vim.api.nvim_set_keymap('n', '<leader>z', ':ZenMode<CR>', { noremap = true, silent = true, desc = "Toggle Zen Mode" })
