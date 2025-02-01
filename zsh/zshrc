@@ -200,3 +200,5 @@ eval $(thefuck --alias fk)
 # 13. Install sdkman
 # 15. Install lazygit
 # 16. Install lazydocker
+# 17. Install thefuck
+# 18. Install yazi
