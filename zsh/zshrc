@@ -175,6 +175,7 @@ eval "$(zoxide init --cmd cd zsh)"
 
 alias rpi-tmux='tmux new-window "ssh -t toni@192.168.100.193 tmux attach-session -t default"'
 
+
 # Automatically start tmux and run tmux-resurrect if not already in tmux
 if [[ -z "$TMUX" ]]; then
     tmux new-session \; run-shell "~/.tmux/plugins/tmux-resurrect/scripts/restore.sh"

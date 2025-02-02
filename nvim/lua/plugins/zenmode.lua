@@ -23,7 +23,7 @@ return {
 	config = function()
 		local zen_mode = require("zen-mode")
 
-				-- that keeps it in tmux
+		-- that keeps it in tmux
 		vim.keymap.set("n", "<leader>zt", function()
 			zen_mode.setup({
 				window = {
@@ -36,6 +36,12 @@ return {
 					todo = { enabled = false },
 					tmux = { enabled = false },
 				},
+				on_open = function()
+					vim.cmd("Copilot disable")
+				end,
+				on_close = function()
+					vim.cmd("Copilot enable")
+				end,
 			})
 			zen_mode.toggle()
 		end, { desc = "ZenMode with Tmux disabled" })
@@ -53,6 +59,12 @@ return {
 					todo = { enabled = false },
 					tmux = { enabled = true },
 				},
+				on_open = function()
+					vim.cmd("Copilot disable")
+				end,
+				on_close = function()
+					vim.cmd("Copilot enable")
+				end,
 			})
 			zen_mode.toggle()
 		end, { desc = "ZenMode with Tmux enabled" })
