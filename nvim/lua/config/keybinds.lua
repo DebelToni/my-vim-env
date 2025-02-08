@@ -47,10 +47,10 @@ set_keymap("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>", {desc = "Nav right"})
 -- vim.api.nvim_set_keymap('n', '<A-k>', ':m+1<CR>==', { noremap = true, silent = true })
 -- vim.api.nvim_set_keymap('v', '<A-k>', ":m'>+<CR>gv=gv", { noremap = true, silent = true })
 -- vim.api.nvim_set_keymap('v', '<A-j>', ":m'<-2<CR>gv=gv", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-k>', ':m-2<CR>==', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<A-j>', ':m+1<CR>==', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<A-j>', ":m'>+<CR>gv=gv", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<A-k>', ":m'<-2<CR>gv=gv", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-k>', ':m-2<CR>==', { noremap = true, silent = true, desc = "Move line up" })
+vim.api.nvim_set_keymap('n', '<A-j>', ':m+1<CR>==', { noremap = true, silent = true, desc = "Move line down" })
+vim.api.nvim_set_keymap('v', '<A-j>', ":m'>+<CR>gv=gv", { noremap = true, silent = true, desc = "Move line down" })
+vim.api.nvim_set_keymap('v', '<A-k>', ":m'<-2<CR>gv=gv", { noremap = true, silent = true, desc = "Move line up" })
 
 vim.api.nvim_set_keymap('n', '<leader>bb', ':b#<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true })
@@ -63,3 +63,5 @@ vim.api.nvim_set_keymap('n', '<M-h>', ':vertical resize -1<CR>', { noremap = tru
 vim.api.nvim_set_keymap('n', '<M-l>', ':vertical resize +1<CR>', { noremap = true, silent = true, desc = "Resize window right" })
 
 -- vim.api.nvim_set_keymap('n', '<leader>z', ':ZenMode<CR>', { noremap = true, silent = true, desc = "Toggle Zen Mode" })
+
+vim.api.nvim_set_keymap('n', '<leader>dm', '<cmd>NoiceDismiss<CR>', { noremap = true, silent = true, desc = "Dismiss noice messages" })
