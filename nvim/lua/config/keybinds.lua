@@ -65,3 +65,6 @@ vim.api.nvim_set_keymap('n', '<M-l>', ':vertical resize +1<CR>', { noremap = tru
 -- vim.api.nvim_set_keymap('n', '<leader>z', ':ZenMode<CR>', { noremap = true, silent = true, desc = "Toggle Zen Mode" })
 
 vim.api.nvim_set_keymap('n', '<leader>dm', '<cmd>NoiceDismiss<CR>', { noremap = true, silent = true, desc = "Dismiss noice messages" })
+
+
+vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true, desc = "Exit terminal mode" })
