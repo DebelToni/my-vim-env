@@ -8,7 +8,9 @@ require("config.myscripts.code_hide")
 require("config.plugins.which-key")
 require("config.keybinds")
 -- require("config.dynamic_yank").start()
---
+require("config.myscripts.switch-to-english")
+require("config.myscripts.floating_terminal")
+
 --Todo: make file for customisaion
 vim.opt.number = true
 vim.opt.relativenumber = true
