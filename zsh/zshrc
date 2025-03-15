@@ -23,6 +23,7 @@ export PATH="$PATH:/opt/nvim/"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
+export GEM_PATH="/var/lib/gems/3.0.0:$GEM_PATH"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 [ -f ~/.bashrc ] && source ~/.bashrc
 
@@ -33,6 +34,8 @@ export NVM_DIR="$HOME/.nvm"
 
 alias bat="batcat"
 # alias yt = 'ytfzf -t'
+
+alias cmd=/mnt/c/Windows/System32/cmd.exe
 
 alias inv='nvim $(fzf -m --preview="batcat --color=always {}")'
 
