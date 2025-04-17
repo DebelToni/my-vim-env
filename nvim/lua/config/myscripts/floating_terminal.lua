@@ -78,7 +78,7 @@ vim.api.nvim_set_keymap(
 vim.api.nvim_set_keymap(
 	"n",
 	"<M-m>",
-	":wa<CR>:Floaterminal<CR>imvn clean compile && mvn clean test<CR>",
+	":wa<CR>:Floaterminal<CR>i<CR>mvn clean compile && mvn clean test<CR>",
 	{ noremap = true, silent = true, desc = "Compile maven in floating terminal" }
 )
 

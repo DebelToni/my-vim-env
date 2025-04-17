@@ -20,6 +20,7 @@ return {
 				-- null_ls.builtins.diagnostics.checkstyle.with({
 				-- 	extra_args = { "-c", "/google_checks.xml" },
 				-- }),
+				null_ls.builtins.formatting.beautysh,
 
 				-- null_ls.builtins.diagnostics.cpplint,
 			},

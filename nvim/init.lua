@@ -21,7 +21,33 @@ vim.opt.tabstop = 4
 vim.o.tabstop = 4
 
 vim.o.tabstop = 4 -- A TAB character looks like 4 spaces
-vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
+-- vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
 vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
 vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting
 vim.o.relativenumber = true
+
+-- godot
+--
+-- require("lspconfig")["gdscript"].setup({
+--   name = "godot",
+--   cmd = vim.lsp.rpc.connect("127.0.0.1", "6005"),
+-- })
+--
+--
+-- local dap = require("dap")
+-- dap.adapters.godot = {
+--   type = "server",
+--   host = "127.0.0.1",
+--   port = 6006,
+-- }
+--
+-- dap.configurations.gdscript = {
+--   {
+--     type = "godot",
+--     request = "launch",
+--     name = "Launch scene",
+--     project = "${workspaceFolder}",
+--     launch_scene = true,
+--   },
+-- }
+--
