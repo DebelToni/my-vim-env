@@ -7,6 +7,8 @@ declare -A links=(
   ["$DOTDIR/zsh/.zshrc"]="$HOME/.zshrc"
   ["$DOTDIR/tmux/.tmux.conf"]="$HOME/.tmux.conf"
   ["$DOTDIR/nvim"]="$HOME/.config/nvim"
+  ["$DOTDIR/zsh/.zshenv"]="$HOME/.zshenv"
+  ["$DOTDIR/zsh/.zprofile"]="$HOME/.zprofile"
 )
 
 for src in "${!links[@]}"; do
