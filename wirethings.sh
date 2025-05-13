@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-DOTDIR="$HOME/Documents/my-vim-env"
+DOTDIR="$HOME/my-vim-env"
 
 declare -A links=(
   ["$DOTDIR/zsh/.zshrc"]="$HOME/.zshrc"
