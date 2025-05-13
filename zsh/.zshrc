@@ -6,6 +6,26 @@
 # 2) Oh My Zsh setup (exactly once)
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# ─── Bootstrap Oh My Zsh plugins if missing ────────────────────────────────────
+CUSTOM_PLUGINS="${ZSH:-$HOME/.oh-my-zsh}/custom/plugins"
+
+# zsh-autosuggestions
+if [[ ! -d $CUSTOM_PLUGINS/zsh-autosuggestions ]]; then
+  git clone https://github.com/zsh-users/zsh-autosuggestions \
+    $CUSTOM_PLUGINS/zsh-autosuggestions
+fi
+
+# zsh-syntax-highlighting
+if [[ ! -d $CUSTOM_PLUGINS/zsh-syntax-highlighting ]]; then
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting \
+    $CUSTOM_PLUGINS/zsh-syntax-highlighting
+fi
+
+# (add more plugins here the same way)
+
+
+
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
