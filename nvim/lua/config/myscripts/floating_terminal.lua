@@ -59,6 +59,13 @@ vim.api.nvim_set_keymap(
 	":Floaterminal<CR>",
 	{ noremap = true, silent = true, desc = "Open a floating terminal" }
 )
+-- vim.api.nvim_set_keymap(
+-- 	"t",
+-- 	-- "<M-t>",
+-- 	"<a-q>",
+-- 	":Floaterminal<CR>",
+-- 	{ noremap = true, silent = true, desc = "Open a floating terminal" }
+-- )
 vim.api.nvim_set_keymap(
 	"n",
 	-- "<M-t>",

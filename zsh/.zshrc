@@ -1,17 +1,81 @@
+# Detect Ghostty vs. Apple Terminal (and other emulators)
+if [[ -n "$GHOSTTY_RESOURCES_DIR" ]]; then
+# ———————— Open-in-Neovim bridge for Ghostty ————————
+  LOCKFILE="/tmp/ghostty_nvim_$USER"
+  
+  if [[ -f "$LOCKFILE" ]]; then
+    # read & open each file in nvim
+    while IFS= read -r file; do
+      nvim "$file"
+    done < "$LOCKFILE"
+    # cleanup so future Ghostty launches are normal
+    rm -f "$LOCKFILE"
+    # after quitting nvim, fall back to interactive shell
+    unset LOCKFILE
+    # return
+  fi
+# ———————————————————————————————————————————————
+
+  # inside Ghostty → use Powerlevel10k + extra plugins
+  ZSH_THEME="powerlevel10k/powerlevel10k"
+  plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+else
+  # inside Apple Terminal (or anything else) → keep it simple
+  ZSH_THEME="robbyrussell"
+  plugins=(git)
+fi
+
+export ZSH="$HOME/.oh-my-zsh"
+source $ZSH/oh-my-zsh.sh
+
+# load your Powerlevel10k config only if in Ghostty
+if [[ -n "$GHOSTTY_RESOURCES_DIR" ]]; then
+  [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+fi
+
+# …the rest of your aliases, functions, sdkman, nvm etc. all go here unchanged…
+
+# ~/.zshrc
+# — Interactive‐shell setup: prompt, plugins, aliases, functions
+
+# instant-prompt cache for Powerlevel10k
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# OS-specific tweaks
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS Homebrew ‘bat’
+  alias bat="bat"
+
+  # (Optionally) guard Swift if you install via Homebrew
+  if [[ -d "/opt/homebrew/opt/swift/bin" ]]; then
+    export PATH="/opt/homebrew/opt/swift/bin:$PATH"
+  fi
+
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  # Ubuntu ‘batcat’
+  alias bat="batcat"
+
+  # Your custom Neovim path on WSL2
+  export PATH="/opt/nvim/:$PATH"
+
+  # Ubuntu Swift install path
+  export PATH="/opt/swift/swift-6.0.3-RELEASE-ubuntu22.04/usr/bin:$PATH"
+
+  # Windows-cmd alias (WSL2)
+  alias cmd=/mnt/c/Windows/System32/cmd.exe
 fi
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 export ZSH="$HOME/.oh-my-zsh"
-
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 plugins=(
-	git
-	# zsh-autosuggestions
+  git
+  zsh-autosuggestions
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -19,9 +83,7 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export PATH="$PATH:/opt/nvim/"
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 export GEM_PATH="/var/lib/gems/3.0.0:$GEM_PATH"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -31,15 +93,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export PATH="/opt/swift/swift-6.0.3-RELEASE-ubuntu22.04/usr/bin:$PATH"
-
-alias bat="batcat"
-# alias yt = 'ytfzf -t'
-
-alias cmd=/mnt/c/Windows/System32/cmd.exe
-
+# alias adjustments and functions
 alias inv='nvim $(fzf -m --preview="batcat --color=always {}")'
-
 alias py='python3'
 
 nvim() {
@@ -50,7 +105,6 @@ nvim() {
   esac
 }
 
-
 vi() {
   nvim "$@" && clear
 }
@@ -58,9 +112,11 @@ vi() {
 cls() {
   clear && ls
 }
+
 makc() {
   make && ls
 }
+
 alias cdu='cd ../'
 alias c='clear'
 
@@ -83,11 +139,10 @@ eval "$(zoxide init --cmd cd zsh)"
 
 alias rpi-tmux='tmux new-window "ssh -t toni@192.168.100.193 tmux attach-session -t default"'
 
-
 # Automatically start tmux and run tmux-resurrect if not already in tmux
-if [[ -z "$TMUX" ]]; then
-    tmux new-session \; run-shell "~/.tmux/plugins/tmux-resurrect/scripts/restore.sh"
-fi
+# if [[ -z "$TMUX" ]]; then
+#   tmux new-session \; run-shell "~/.tmux/plugins/tmux-resurrect/scripts/restore.sh"
+# fi
 
 eval $(thefuck --alias)
 eval $(thefuck --alias fk)
