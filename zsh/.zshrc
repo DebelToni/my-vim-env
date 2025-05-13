@@ -211,3 +211,5 @@ mancheat() {
   curl "$url" | less
 }
 
+alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
+

@@ -7,6 +7,8 @@ local function is_md()
 	then
 		return 1
 	else
+		vim.api.nvim_set_keymap("n", "j", "j", {})
+		vim.api.nvim_set_keymap("n", "k", "k", {})
 		return 0
 	end
 end

@@ -14,6 +14,7 @@ require("config.myscripts.move_upORdown_better_in_markdown")
 
 
 --Todo: make file for customisaion
+local tabs = 2
 vim.opt.number = true
 vim.opt.relativenumber = true
 

@@ -22,7 +22,7 @@ return {
 					"vimls",
 					"pyright",
 					"clangd",
-					"lemminx",
+					"lemminx"
 					-- future reference: https://github.com/williamboman/mason-lspconfig.nvim
 				},
 			})

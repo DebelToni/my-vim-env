@@ -97,7 +97,10 @@ local function compile_c()
 
 	local first_line = vim.api.nvim_buf_get_lines(vim.api.nvim_get_current_buf(), 0, 1, 0)[1]
 
-	local cmd = "c\n" .. "gcc " .. filename .. " -o " .. basename .. " && ./" .. basename .. "\n"
+	local arguments = first_line:match("^//%s*args%s*=%s*(.*)")
+
+	-- local cmd = "c\n" .. "gcc " .. filename .. " -o " .. basename .. " && ./" .. basename .. "\n"
+	local cmd = "c\n" .. "gcc " .. filename .. " -o " .. basename .. " && ./" .. basename .. " " .. arguments .. "\n"
 
 	if first_line:match("^//%s*make") then
 		cmd = "c\n" .. "make\n" .. "./" .. basename .. "\n"
