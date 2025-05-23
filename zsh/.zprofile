@@ -2,8 +2,30 @@
 
 # macOS: Homebrew environment
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-  export PATH="/opt/homebrew/bin:$PATH"
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+	export PATH="/opt/homebrew/bin:$PATH"
+	# export PATH="/opt/homebrew/opt/postgresql@17:$PATH"
+	export PATH="$(brew --prefix postgresql@17)/bin:$PATH"
+	# echo "OS: $OSTYPE"
+	#tkiinter
+	# export PATH="/opt/homebrew/opt/tcl-tk/bin:$PATH"          # run-time
+	# export LDFLAGS="-L/opt/homebrew/opt/tcl-tk/lib"           # linker
+	# export CPPFLAGS="-I/opt/homebrew/opt/tcl-tk/include"      # compiler headers
+	# export PKG_CONFIG_PATH="/opt/homebrew/opt/tcl-tk/lib/pkgconfig"  # pkg-config
+	# export LDFLAGS="-L$(brew --prefix tcl-tk)/lib \
+	#  -L$(brew --prefix openssl@3)/lib \
+	#  -L$(brew --prefix readline)/lib \
+	#  -L$(brew --prefix xz)/lib \
+	#  -L$(xcrun --show-sdk-path)/usr/lib"
+	#
+	# export CPPFLAGS="-I$(brew --prefix tcl-tk)/include \
+	#  -I$(brew --prefix openssl@3)/include \
+	#  -I$(brew --prefix readline)/include \
+	#  -I$(brew --prefix xz)/include"
+	#
+	# export PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig:\ $(brew --prefix openssl@3)/lib/pkgconfig"
+
+
 
 # Linux (WSL2 Ubuntu): ensure ~/.local/bin and custom installs come first
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then

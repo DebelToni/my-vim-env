@@ -88,6 +88,7 @@ return {
 							".ruff_cache",
 							".git/",
 							".mypy_cache",
+							"__pycache__",
 						},
 					},
 				},
