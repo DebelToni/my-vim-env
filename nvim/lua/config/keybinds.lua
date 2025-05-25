@@ -28,6 +28,7 @@ set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", {desc = "Find fil
 set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", {desc = "Grep text in files"})
 set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", {desc = "List buffers"})
 set_keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", {desc = "Help tags"})
+set_keymap("n", "<leader>fc", "<cmd>Telescope commands<cr>", {desc = "List commands"})
 
 --Tmux
 set_keymap("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", {desc = "Nav left"})
