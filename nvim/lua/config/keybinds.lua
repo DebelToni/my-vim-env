@@ -16,12 +16,12 @@ set_keymap('n', ';', ':', {desc = "Enter command-line with ;"})
 
 
 local modes = { 'n', 'i', 'v', 'x', 's', 'o' } -- Normal, Insert, Visual, Select, Operator-pending modes
-for _, mode in ipairs(modes) do
-	set_keymap(mode, '<Up>', '<NOP>', { noremap = true, silent = true, desc = "Disable Up Arrow" })
-	set_keymap(mode, '<Down>', '<NOP>', { noremap = true, silent = true, desc = "Disable Down Arrow" })
-	set_keymap(mode, '<Left>', '<NOP>', { noremap = true, silent = true, desc = "Disable Left Arrow" })
-	set_keymap(mode, '<Right>', '<NOP>', { noremap = true, silent = true, desc = "Disable Right Arrow" })
-end
+-- for _, mode in ipairs(modes) do
+-- 	set_keymap(mode, '<Up>', '<NOP>', { noremap = true, silent = true, desc = "Disable Up Arrow" })
+-- 	set_keymap(mode, '<Down>', '<NOP>', { noremap = true, silent = true, desc = "Disable Down Arrow" })
+-- 	set_keymap(mode, '<Left>', '<NOP>', { noremap = true, silent = true, desc = "Disable Left Arrow" })
+-- 	set_keymap(mode, '<Right>', '<NOP>', { noremap = true, silent = true, desc = "Disable Right Arrow" })
+-- end
 
 -- Telescope
 set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", {desc = "Find files"})
