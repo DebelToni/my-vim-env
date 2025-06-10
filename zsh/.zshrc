@@ -124,6 +124,12 @@ mancheat() {
   cheat "$@" | less
 }
 
+vimouse(){
+	cd ~/Documents/python/viMouse
+	source ../py/bin/activate
+	python vimMouse.py
+}
+
 # Optional auto-start tmux+resurrect (commented out)
 # if [[ -z "$TMUX" ]]; then
 #   tmux new-session \; run-shell "~/.tmux/plugins/tmux-resurrect/scripts/restore.sh"
@@ -345,3 +351,4 @@ mancheat() {
 #
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 #
+
