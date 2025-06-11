@@ -47,6 +47,8 @@ fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
   alias bat="bat"
   [[ -d "/opt/homebrew/opt/swift/bin" ]] && export PATH="/opt/homebrew/opt/swift/bin:$PATH"
+  alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   alias bat="batcat"
   export PATH="/opt/nvim/:$PATH"
