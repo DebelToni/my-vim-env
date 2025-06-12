@@ -56,7 +56,7 @@ vim.api.nvim_set_keymap('v', '<A-k>', ":m'<-2<CR>gv=gv", { noremap = true, silen
 vim.api.nvim_set_keymap('n', '<leader>bb', ':b#<CR>', { noremap = true , desc = "Switch to previous buffer"} )
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, silent = true , desc = "Open diagnostics" })
 
-set_keymap('n', 'V', '<C-v>', { desc = "Visual block mode" })
+-- set_keymap('n', 'V', '<C-v>', { desc = "Visual block mode" })
 
 vim.api.nvim_set_keymap('n', '<M-k>', ':res +1<CR>', { noremap = true, silent = true, desc = "Resize window up" })
 vim.api.nvim_set_keymap('n', '<M-j>', ':res -1<CR>', { noremap = true, silent = true, desc = "Resize window down" })

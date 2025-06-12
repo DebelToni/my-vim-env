@@ -48,6 +48,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   eval "$(zoxide init --cmd cd zsh)"
   alias bat="bat"
   [[ -d "/opt/homebrew/opt/swift/bin" ]] && export PATH="/opt/homebrew/opt/swift/bin:$PATH"
+  alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   alias bat="batcat"
   export PATH="/opt/nvim/:$PATH"
@@ -122,6 +124,12 @@ cheat() {
 
 mancheat() {
   cheat "$@" | less
+}
+
+vimouse(){
+	cd ~/Documents/python/viMouse
+	source ../py/bin/activate
+	python vimMouse.py
 }
 
 # Optional auto-start tmux+resurrect (commented out)
@@ -345,3 +353,4 @@ mancheat() {
 #
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 #
+
