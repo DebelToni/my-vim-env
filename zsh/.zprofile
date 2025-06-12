@@ -29,6 +29,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
 # Linux (WSL2 Ubuntu): ensure ~/.local/bin and custom installs come first
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
   export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 

@@ -45,6 +45,7 @@ fi
 
 # 5) OS-specific tweaks & aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
+  eval "$(zoxide init --cmd cd zsh)"
   alias bat="bat"
   [[ -d "/opt/homebrew/opt/swift/bin" ]] && export PATH="/opt/homebrew/opt/swift/bin:$PATH"
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -105,7 +106,6 @@ makc() {
 # }
 
 # zoxide, thefuck, fzf, and cheat.sh integration
-eval "$(zoxide init --cmd cd zsh)"
 eval "$(thefuck --alias)"
 eval "$(thefuck --alias fk)"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
