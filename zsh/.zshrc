@@ -62,7 +62,7 @@ alias py='python3'
 alias lgit='lazygit'
 alias ldocker='lazydocker'
 alias cdu='cd ../'
-alias c='clear'
+alias c='clear -x'
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 brlines() {
   if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then

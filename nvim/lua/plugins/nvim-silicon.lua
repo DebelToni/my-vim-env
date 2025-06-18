@@ -51,8 +51,8 @@ return {
 				to_clipboard = false,
 				window_title = nil,
 				-- Using WSL clipboard options as needed
-				wslclipboard = "always",
-				wslclipboardcopy = "keep",
+				-- wslclipboard = "always",
+				-- wslclipboardcopy = "keep",
 				-- Specify silicon command with custom config file for Catppuccin Mocha
 				-- command = "silicon --theme ~/.config/silicon/catppuccin-mocha.tmTheme",
 				output = function()
