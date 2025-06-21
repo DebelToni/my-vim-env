@@ -132,6 +132,12 @@ vimouse(){
 	python vimMouse.py
 }
 
+drawit(){
+	cd ~/Documents/python/drawIT
+	source ../py/bin/activate
+	python drawit.py
+}
+
 # Optional auto-start tmux+resurrect (commented out)
 # if [[ -z "$TMUX" ]]; then
 #   tmux new-session \; run-shell "~/.tmux/plugins/tmux-resurrect/scripts/restore.sh"
