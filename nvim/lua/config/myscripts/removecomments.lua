@@ -82,6 +82,8 @@ local function remove_comments()
     cleaned = strip_c(orig)
   elseif ext == "py" then
     cleaned = strip_python(orig)
+  elseif ext == "yml" or ext == "yaml" then
+	cleaned = strip_python(orig)
   else
     vim.notify("remove-comments: unsupported extension “" .. ext .. "”", vim.log.levels.WARN)
     return

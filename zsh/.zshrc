@@ -50,6 +50,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  alias nvidia-smi="/mnt/c/Documents\ and\ Settings/All\ Users/NVIDIA\ Corporation/NVIDIA\ app/UpdateFramework/ota-artifacts/grd/post-processing/aa811dd5940cca149f351159ffb1fcb1/Display.Driver/nvidia-smi"
   alias bat="batcat"
   export PATH="/opt/nvim/:$PATH"
   export PATH="/opt/swift/swift-6.0.3-RELEASE-ubuntu22.04/usr/bin:$PATH"
@@ -63,6 +64,7 @@ alias lgit='lazygit'
 alias ldocker='lazydocker'
 alias cdu='cd ../'
 alias c='clear -x'
+alias update-giant='rm *.* && cp -r ~/Documents/ml/SUPER-GIANT/v1/model/*.* . && cp ~/Documents/ml/SUPER-GIANT/Model_Overview.md .'
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 brlines() {
   if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
