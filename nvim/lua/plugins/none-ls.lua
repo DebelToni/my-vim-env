@@ -26,6 +26,7 @@ return {
 				--
 				-- null_ls.builtins.formatting.bandit,
 				-- null_ls.builtins.formatting.pyright,
+				-- null_ls.builtins.formatting.postgrestools
 			},
 		})
 		vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, { desc = "Format from lsp" })

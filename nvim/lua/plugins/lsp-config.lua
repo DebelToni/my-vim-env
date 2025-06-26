@@ -23,7 +23,7 @@ return {
 					"pyright",
 					"clangd",
 					"lemminx",
-					"postgrestools",
+					-- "postgrestools",
 					-- future reference: https://github.com/williamboman/mason-lspconfig.nvim
 				},
 			})
@@ -47,7 +47,7 @@ return {
 			lspconfig.pyright.setup({ capabilities = capabilities })
 			lspconfig.clangd.setup({ capabilities = capabilities })
 			lspconfig.lemminx.setup({ capabilities = capabilities })
-			lspconfig.postgrestools.setup({ capabilities = capabilities })
+			-- lspconfig.postgrestools.setup({ capabilities = capabilities })
 
 			vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
