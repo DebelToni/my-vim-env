@@ -40,30 +40,31 @@ end
 -- Python helpers  (# … and  ''' / """ …)
 --------------------------------------------------------------------------------
 local function strip_python(lines)
-  local out, in_block, delim = {}, false, nil
+  local out = {}
+  -- local in_block, delim = false, nil
   for _, ln in ipairs(lines) do
     local cur = ln
-    if in_block then
-      local stop = cur:find(delim, 1, true)
-      if stop then cur = cur:sub(stop + 3); in_block = false else cur = "" end
-    end
-    if not in_block then
-      local p1, p2 = cur:find("'''", 1, true), cur:find('"""', 1, true)
-      local p, d = nil, nil
-      if p1 and (not p2 or p1 < p2) then p, d = p1, "'''" end
-      if p2 and (not p1 or p2 < p1) then p, d = p2, '"""' end
-      if p then
-        local before, after = cur:sub(1, p - 1), cur:sub(p + 3)
-        local close = after:find(d, 1, true)
-        if close then
-          cur = before .. after:sub(close + 3)
-        else
-          cur, in_block, delim = before, true, d
-        end
-      end
+    -- if in_block then
+    --   local stop = cur:find(delim, 1, true)
+    --   if stop then cur = cur:sub(stop + 3); in_block = false else cur = "" end
+    -- end
+    -- if not in_block then
+      -- local p1, p2 = cur:find("'''", 1, true), cur:find('"""', 1, true)
+      -- local p, d = nil, nil
+      -- if p1 and (not p2 or p1 < p2) then p, d = p1, "'''" end
+      -- if p2 and (not p1 or p2 < p1) then p, d = p2, '"""' end
+      -- if p then
+      --   local before, after = cur:sub(1, p - 1), cur:sub(p + 3)
+      --   local close = after:find(d, 1, true)
+      --   if close then
+      --     cur = before .. after:sub(close + 3)
+      --   else
+      --     cur, in_block, delim = before, true, d
+      --   end
+      -- end
       local h = cur:find("#")
       if h then cur = cur:sub(1, h - 1) end
-    end
+    -- end
     table.insert(out, cur)
   end
   return out
