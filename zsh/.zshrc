@@ -48,6 +48,24 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   alias bat="bat"
   [[ -d "/opt/homebrew/opt/swift/bin" ]] && export PATH="/opt/homebrew/opt/swift/bin:$PATH"
   alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+  # function ls() {
+  #  local depth=0
+  #
+  # if [[ $1 =~ ^[0-9]+$ ]]; then
+  #   depth=$1
+  #   shift
+  # fi
+  #
+  # command eza -l -b \
+  #   --no-permissions \
+  #   --no-user \
+  #   --time-style=relative \
+  #   --sort=modified \
+  #   --tree \
+  #   --level="$depth" \
+  #   "${@:-.}"
+  # }
+  alias ls='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=1'
 
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   alias nvidia-smi="/mnt/c/Documents\ and\ Settings/All\ Users/NVIDIA\ Corporation/NVIDIA\ app/UpdateFramework/ota-artifacts/grd/post-processing/aa811dd5940cca149f351159ffb1fcb1/Display.Driver/nvidia-smi"
