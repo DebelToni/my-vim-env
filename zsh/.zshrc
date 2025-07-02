@@ -65,7 +65,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   #   --level="$depth" \
   #   "${@:-.}"
   # }
-  alias ls='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=1'
 
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   alias nvidia-smi="/mnt/c/Documents\ and\ Settings/All\ Users/NVIDIA\ Corporation/NVIDIA\ app/UpdateFramework/ota-artifacts/grd/post-processing/aa811dd5940cca149f351159ffb1fcb1/Display.Driver/nvidia-smi"
@@ -76,6 +75,7 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 fi
 
 # 6) Aliases & functions
+alias ls='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=1'
 alias inv='nvim $(fzf -m --preview="batcat --color=always {}")'
 alias py='python3'
 alias lgit='lazygit'
