@@ -24,9 +24,12 @@ fi
 
 # (add more plugins here the same way)
 
+HISTSIZE=1000000         # Number of commands in memory per session
+SAVEHIST=1000000         # Number of commands to save to file
+HISTFILE=~/.zsh_history  # File where history is saved
 
 
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting fzf-tab)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -77,6 +80,7 @@ fi
 
 # 6) Aliases & functions
 alias ls='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=1'
+alias lss='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=0'
 alias inv='nvim $(fzf -m --preview="batcat --color=always {}")'
 alias py='python3'
 alias lgit='lazygit'
@@ -84,6 +88,28 @@ alias ldocker='lazydocker'
 alias cdu='cd ../'
 alias c='clear -x'
 alias update-giant='rm *.* && cp -r ~/Documents/ml/SUPER-GIANT/v1/model/*.* . && cp ~/Documents/ml/SUPER-GIANT/Model_Overview.md .'
+cdf() {
+  local target
+  # pick a file or directory
+  target=$(fzf) || return      # cancel on ESC/CTRL-C
+  # if it’s a directory, cd there; otherwise cd to its dirname
+  if [[ -d "$target" ]]; then
+    cd -- "$target" || return
+  else
+    cd -- "$(dirname -- "$target")" || return
+  fi
+}
+cpf() {
+  if [[ -z $1 || ! -d $1 ]]; then
+    echo "Usage: fzfcp <target-dir>"
+    return 1
+  fi
+  local files
+  # multi-select with null delimiters
+  files=$(fzf -m --print0) || return
+  # copy each into the target
+  printf '%s\0' "$files" | xargs -0 -I{} cp -- {} "$1"
+}
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 brlines() {
   if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
@@ -131,6 +157,9 @@ makc() {
 eval "$(thefuck --alias)"
 eval "$(thefuck --alias fk)"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+setopt extended_glob # some fzf
+setopt globstarshort
+
 
 cheat() {
   if (( $# < 1 )); then
@@ -379,4 +408,3 @@ drawit(){
 #
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 #
-
