@@ -49,6 +49,7 @@ fi
 # 5) OS-specific tweaks & aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
   eval "$(zoxide init --cmd cd zsh)"
+  alias killAnyDesk="sudo pkill -9 -f AnyDesk"
   alias bat="bat"
   [[ -d "/opt/homebrew/opt/swift/bin" ]] && export PATH="/opt/homebrew/opt/swift/bin:$PATH"
   alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
@@ -79,9 +80,25 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 fi
 
 # 6) Aliases & functions
-alias ls='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=1'
-alias lss='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=0'
-alias inv='nvim $(fzf -m --preview="batcat --color=always {}")'
+alias n='nvim'
+# alias ls='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=0'
+# alias lss='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=1'
+# Add this to ~/.bashrc, ~/.zshrc, or wherever you keep your shell functions:
+
+eza-ls() {
+  if [ $# -eq 0 ]; then
+    # plain `ls` → no recursion
+    command eza --tree --level=0 --no-permissions --no-user --time-style=relative --sort=modified --git --icons -b -l "$@"
+  else
+    # `ls some/dir` → one-level recursion into that dir
+    command eza --tree --level=1 --no-permissions --no-user --time-style=relative --sort=modified --git --icons -b -l "$@"
+  fi
+}
+
+# then alias or symlink it as your new `ls`
+alias ls='eza-ls'
+
+alias inv='nvim $(fzf -m --preview="bat --color=always {}")'
 alias py='python3'
 alias lgit='lazygit'
 alias ldocker='lazydocker'
@@ -101,7 +118,7 @@ cdf() {
 }
 cpf() {
   if [[ -z $1 || ! -d $1 ]]; then
-    echo "Usage: fzfcp <target-dir>"
+    echo "Usage: cpf <target-dir>"
     return 1
   fi
   local files
@@ -109,6 +126,17 @@ cpf() {
   files=$(fzf -m --print0) || return
   # copy each into the target
   printf '%s\0' "$files" | xargs -0 -I{} cp -- {} "$1"
+}
+mvf() {
+  if [[ -z $1 || ! -d $1 ]]; then
+    echo "Usage: mvf <target-dir>"
+    return 1
+  fi
+  local files
+  # multi-select with null delimiters
+  files=$(fzf -m --print0) || return
+  # copy each into the target
+ /printf '%s\0' "$files" | xargs -0 -I{} mv -- {} "$1"
 }
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 brlines() {

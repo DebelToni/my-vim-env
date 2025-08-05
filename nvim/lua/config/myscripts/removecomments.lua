@@ -79,7 +79,7 @@ local function remove_comments()
   local orig  = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
   local cleaned
 
-  if ext == "c" or ext == "h" then
+  if ext == "c" or ext == "h" or ext == "java" or ext == "cs" then
     cleaned = strip_c(orig)
   elseif ext == "py" then
     cleaned = strip_python(orig)
