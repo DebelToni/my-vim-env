@@ -25,6 +25,7 @@ local modes = { 'n', 'i', 'v', 'x', 's', 'o' } -- Normal, Insert, Visual, Select
 
 -- Telescope
 set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", {desc = "Find files"})
+set_keymap("n", "<leader>fa", "<cmd>Telescope find_files<cr>", {desc = "Find files"})
 set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", {desc = "Grep text in files"})
 set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", {desc = "List buffers"})
 set_keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", {desc = "Help tags"})
