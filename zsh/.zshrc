@@ -2,8 +2,6 @@
 
 # 1) pull in login-shell exports/env first
 [[ -f ~/.zprofile ]] && source ~/.zprofile
-
-# 2) Oh My Zsh setup (exactly once)
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -32,6 +30,8 @@ HISTFILE=~/.zsh_history  # File where history is saved
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting fzf-tab)
 
 source $ZSH/oh-my-zsh.sh
+
+bindkey -v
 
 # 3) Powerlevel10k instant-prompt & config
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
