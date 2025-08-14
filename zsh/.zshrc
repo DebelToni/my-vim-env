@@ -48,6 +48,7 @@ fi
 
 # 5) OS-specific tweaks & aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
+  export PATH="$HOME/bin:$PATH"
   eval "$(zoxide init --cmd cd zsh)"
   alias killAnyDesk="sudo pkill -9 -f AnyDesk"
   alias bat="bat"
