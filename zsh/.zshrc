@@ -82,8 +82,17 @@ fi
 
 # 6) Aliases & functions
 alias n='nvim'
-# alias ls='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=0'
-# alias lss='eza -b -l --no-permissions --no-user --time-style=relative --sort=modified --tree --level=1'
+alias psql-size='psql -U postgres -h localhost -p 5432 -c "SELECT d.datname AS database, pg_size_pretty(pg_database_size(d.datname)) AS size FROM pg_database d WHERE NOT d.datistemplate ORDER BY pg_database_size(d.datname) DESC;"'
+
+# pgtops: list biggest tables in every non-template DB
+
+# pgtops: show biggest relations per non-template DB (robust)
+
+# Put this in ~/.bashrc or ~/.zshrc
+
+pg-table-sizes-all(){ psql -U postgres -h localhost -p 5432 -At -c "SELECT datname FROM pg_database WHERE NOT datistemplate;" | while read -r db; do echo "=== $db ==="; psql -U postgres -h localhost -p 5432 -d "$db" -c "SELECT n.nspname AS schema, c.relname AS table, pg_size_pretty(pg_total_relation_size(c.oid)) AS total_size, pg_total_relation_size(c.oid) AS total_bytes FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE c.relkind IN ('r','p','m') AND n.nspname NOT IN ('pg_catalog','information_schema') ORDER BY total_bytes DESC${1:+ LIMIT $1};"; done; }
+
+
 # Add this to ~/.bashrc, ~/.zshrc, or wherever you keep your shell functions:
 
 eza-ls() {

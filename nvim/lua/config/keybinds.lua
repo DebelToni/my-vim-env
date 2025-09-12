@@ -12,7 +12,7 @@ local set_keymap = function(mode, lhs, rhs, opts)
 -- set_keymap('n', 'k', 'j', { desc = "Move down" })
 -- set_keymap('v', 'k', 'j', { desc = "Move down in visual mode" })
 
-set_keymap('n', ';', ':', {desc = "Enter command-line with ;"})
+-- set_keymap('n', ';', ':', {desc = "Enter command-line with ;"})
 
 
 local modes = { 'n', 'i', 'v', 'x', 's', 'o' } -- Normal, Insert, Visual, Select, Operator-pending modes
@@ -60,19 +60,19 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { noremap = true, si
 -- set_keymap('n', 'V', '<C-v>', { desc = "Visual block mode" })
 
 vim.keymap.set('n', '<M-k>', function()
-  vim.cmd('resize +' .. vim.v.count1*5)
+  vim.cmd('resize +' .. (vim.v.count1 == 1 and 5 or vim.v.count1))
 end, { desc = 'Resize window ↑ (count-aware)', silent = true })
 
 vim.keymap.set('n', '<M-j>', function()
-  vim.cmd('resize -' .. vim.v.count1*5)
+  vim.cmd('resize -' .. (vim.v.count1 == 1 and 5 or vim.v.count1))
 end, { desc = 'Resize window ↓ (count-aware)', silent = true })
 
 vim.keymap.set('n', '<M-h>', function()
-  vim.cmd('vertical resize -' .. vim.v.count1*5)
+  vim.cmd('vertical resize -' .. (vim.v.count1 == 1 and 5 or vim.v.count1))
 end, { desc = 'Resize window ← (count-aware)', silent = true })
 
 vim.keymap.set('n', '<M-l>', function()
-  vim.cmd('vertical resize +' .. vim.v.count1*5)
+  vim.cmd('vertical resize +' .. (vim.v.count1 == 1 and 5 or vim.v.count1))
 end, { desc = 'Resize window → (count-aware)', silent = true })
 
 -- vim.api.nvim_set_keymap('n', '<leader>z', ':ZenMode<CR>', { noremap = true, silent = true, desc = "Toggle Zen Mode" })

@@ -12,11 +12,13 @@ require("config.keybinds")
 require("config.myscripts.switch-to-english")
 require("config.myscripts.floating_terminal")
 require("config.myscripts.move_upORdown_better_in_markdown")
+require("config.myscripts.narrow_buffer").setup()
 -- require("config.myscripts.prompt_search").setup { model = "llama3.2:1b",       endpoint = "http://localhost:11434/api/generate", max_context_lines = 400,  }
 
 --Todo: make file for customisaion
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.wrap = true
 
 local tabs = 4
 
