@@ -1,5 +1,9 @@
 vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+-- vim.g.maplocalleader = "\\"
+
+vim.opt.wrap = true
+vim.opt.relativenumber = true
+vim.opt.number = true
 
 --Todo: make file for require
 require("config.lazy")
