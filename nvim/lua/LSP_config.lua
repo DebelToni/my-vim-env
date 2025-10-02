@@ -73,6 +73,9 @@ local function my_on_attach(args)
 			},
 		})
 	end, { buffer = bufnr, desc = "LSP: Format selection" })
+	-- Make <C-Space> trigger completion on demand (fallback to omnifunc)
+	vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
+	vim.keymap.set("i", "<C-n>", "<C-x><C-o>", { buffer = bufnr, desc = "LSP: Trigger completion" })
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -81,9 +84,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- =============== Global defaults for servers ===============
+-- Advertise proper completion capabilities (snippets, resolve, auto-import edits)
+local caps = vim.lsp.protocol.make_client_capabilities()
+caps.textDocument = caps.textDocument or {}
+caps.textDocument.completion = caps.textDocument.completion or {}
+caps.textDocument.completion.completionItem = caps.textDocument.completion.completionItem or {}
+caps.textDocument.completion.completionItem.snippetSupport = true
+caps.textDocument.completion.completionItem.resolveSupport = {
+	properties = { "documentation", "detail", "additionalTextEdits" },
+}
+
 vim.lsp.config("*", {
-	capabilities = {}, -- extend later if you add cmp, etc.
+	-- do NOT override with an empty table
+	capabilities = caps,
 })
+
 
 -- =============== Per-server tweaks ===============
 -- Lua
@@ -165,20 +180,5 @@ vim.lsp.enable({
 	"cssls", -- CSS
 	"tsserver", -- JS/TS
 	"yamlls", -- YAML
-	-- "jdtls"     -- see ftplugin below
+	-- "jdtls"     -- java needs its own dir
 })
-
--- =============== Java (jdtls) ===============
--- Put this file at:  after/ftplugin/java.lua
---[[
-local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
-local root_dir = vim.fs.dirname(vim.fs.find(root_markers, { upward = true })[1]) or vim.fn.getcwd()
-local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
-local workspace_dir = vim.fn.expand("~/.cache/jdtls/workspace/") .. project_name
-
-vim.lsp.start({
-  name = "jdtls",
-  cmd = { "jdtls", "-data", workspace_dir },
-  root_dir = root_dir,
-})
-]]
