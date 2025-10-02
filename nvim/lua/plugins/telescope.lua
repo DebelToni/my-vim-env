@@ -83,12 +83,13 @@ return {
 				pickers = {
 					find_files = {
 						hidden = true,
-						no_ignore = true,
+						-- no_ignore = true, -- this is for gitignorea
 						file_ignore_patterns = {
 							"node_modules",
 							".ruff_cache",
 							".git/",
 							".mypy_cache",
+							"venv",
 							"__pycache__",
 						},
 					},

@@ -14,6 +14,7 @@ local set_keymap = function(mode, lhs, rhs, opts)
 
 -- set_keymap('n', ';', ':', {desc = "Enter command-line with ;"})
 
+vim.keymap.set('n', '<Esc>', ':nohlsearch<CR>:wa<CR>', { silent = true, noremap = true })
 
 local modes = { 'n', 'i', 'v', 'x', 's', 'o' } -- Normal, Insert, Visual, Select, Operator-pending modes
 -- for _, mode in ipairs(modes) do
