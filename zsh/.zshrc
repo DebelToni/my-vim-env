@@ -446,3 +446,4 @@ drawit(){
 #
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 #
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
