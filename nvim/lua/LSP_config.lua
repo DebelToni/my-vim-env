@@ -57,6 +57,22 @@ local function my_on_attach(args)
 	map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
 	map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
 	map("n", "[d", vim.diagnostic.goto_prev, "Prev Diagnostic")
+	-- Format current buffer
+	vim.keymap.set("n", "<leader>gg", function()
+		vim.lsp.buf.format({ async = false })
+	end, { buffer = bufnr, desc = "LSP: Format buffer" })
+
+	-- Format visual selection (if the server supports range formatting)
+	vim.keymap.set("v", "<leader>f", function()
+		local s = vim.api.nvim_buf_get_mark(0, "<")
+		local e = vim.api.nvim_buf_get_mark(0, ">")
+		vim.lsp.buf.format({
+			range = {
+				start = { line = s[1] - 1, character = s[2] },
+				["end"] = { line = e[1] - 1, character = e[2] },
+			},
+		})
+	end, { buffer = bufnr, desc = "LSP: Format selection" })
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -145,8 +161,8 @@ vim.lsp.enable({
 	"bashls", -- Bash
 	"lua_ls", -- Lua
 	"pyright", -- Python
-	"html",   -- HTML
-	"cssls",  -- CSS
+	"html",  -- HTML
+	"cssls", -- CSS
 	"tsserver", -- JS/TS
 	"yamlls", -- YAML
 	-- "jdtls"     -- see ftplugin below
