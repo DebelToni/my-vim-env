@@ -1,59 +1,15 @@
--- return {
--- 	{
--- 		"nvim-telescope/telescope.nvim",
--- 		version = "0.1.x",
--- 		dependencies = {
--- 			"nvim-lua/plenary.nvim",
--- 			"BurntSushi/ripgrep",
--- 		},
--- 		config = function()
--- 			defaults = {
--- 				mappings = {
--- 					i = {
--- 						--        ["<C-j>"] = require('telescope.actions').move_selection_next,
--- 						--        ["<C-k>"] = require('telescope.actions').move_selection_previous,
--- 						--        ["j"] = require('telescope.actions').move_selection_previous,
--- 						--        ["k"] = require('telescope.actions').move_selection_next,
--- 						--        ["<Esc>"] = require('telescope.actions').close,
--- 					},
--- 					n = {
--- 						["j"] = require("telescope.actions").move_selection_previous,
--- 						["k"] = require("telescope.actions").move_selection_next,
--- 						["<CR>"] = require("telescope.actions").select_default,
--- 						["<S-x>"] = require("telescope.actions").select_horizontal,
--- 						["<S-v>"] = require("telescope.actions").select_vertical,
--- 						["<S-t>"] = require("telescope.actions").select_tab,
--- 						["S-v"] = false,
--- 					},
--- 				},
--- 			}
--- 		end,
--- 	},
--- 	{
--- 		"nvim-telescope/telescope-ui-select.nvim",
--- 		config = function()
--- 			require("telescope").setup({
--- 				extensions = {
--- 					["ui-select"] = {
--- 						require("telescope.themes").get_dropdown({}),
--- 					},
--- 				},
--- 			})
--- 			require("telescope").load_extension("ui-select")
--- 		end,
--- 	},
--- }
+-- telescope.lua (fixed full-buffer + top preview for grep)
 return {
 	{
 		"nvim-telescope/telescope.nvim",
-		-- tag = "0.1.5",
-		-- branch = "0.1.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"BurntSushi/ripgrep",
 		},
 		config = function()
-			require("telescope").setup({
+			local telescope = require("telescope")
+
+			telescope.setup({
 				defaults = {
 					hidden = true,
 					no_ignore = true,
@@ -65,7 +21,6 @@ return {
 					},
 					mappings = {
 						i = {
-							-- Uncomment or add your desired mappings for insert mode:
 							-- ["<C-j>"] = require('telescope.actions').move_selection_next,
 							-- ["<C-k>"] = require('telescope.actions').move_selection_previous,
 						},
@@ -83,7 +38,6 @@ return {
 				pickers = {
 					find_files = {
 						hidden = true,
-						-- no_ignore = true, -- this is for gitignorea
 						file_ignore_patterns = {
 							"node_modules",
 							".ruff_cache",
@@ -93,6 +47,35 @@ return {
 							"__pycache__",
 						},
 					},
+
+					-- Full-buffer grep with preview on TOP (50%) and results+prompt on bottom (50%)
+					live_grep = {
+						layout_strategy = "vertical",
+						layout_config = {
+							-- IMPORTANT: use < 1.0 so Telescope treats it as a fraction, not absolute cells
+							vertical = {
+								width = 0.999,
+								height = 0.999,
+								preview_height = 0.50, -- top pane height
+								mirror = true, -- put preview ABOVE results
+								prompt_position = "bottom",
+								preview_cutoff = 0, -- never hide preview
+							},
+						},
+					},
+					grep_string = {
+						layout_strategy = "vertical",
+						layout_config = {
+							vertical = {
+								width = 0.999,
+								height = 1.999,
+								preview_height = 0.50,
+								mirror = true,
+								prompt_position = "bottom",
+								preview_cutoff = 0,
+							},
+						},
+					},
 				},
 				extensions = {
 					["ui-select"] = {
@@ -100,7 +83,8 @@ return {
 					},
 				},
 			})
-			require("telescope").load_extension("ui-select")
+
+			telescope.load_extension("ui-select")
 		end,
 	},
 	{

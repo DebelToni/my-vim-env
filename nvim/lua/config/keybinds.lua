@@ -12,7 +12,10 @@ end
 -- set_keymap('n', 'k', 'j', { desc = "Move down" })
 -- set_keymap('v', 'k', 'j', { desc = "Move down in visual mode" })
 
--- set_keymap('n', ';', ':', {desc = "Enter command-line with ;"})
+-- set_keymap('n', ';', ':', { desc = "Enter command-line with ;" })
+-- set_keymap('v', ';', ':', { desc = "Enter command-line with ; in visual mode" })
+-- set_keymap('n', ':', ';', { desc = "Search with ;" })
+-- set_keymap('v', ':', ';', { desc = "Search with ; in visual mode" })
 
 vim.keymap.set('n', '<Esc>', ':nohlsearch<CR>:wa<CR>', { silent = true, noremap = true })
 
@@ -83,3 +86,8 @@ vim.api.nvim_set_keymap('n', '<leader>dm', '<cmd>NoiceDismiss<CR>',
 
 
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true, desc = "Exit terminal mode" })
+
+vim.api.nvim_set_keymap('n', '<leader>o', ':Oil<CR>', { noremap = true, silent = true, desc = "Open oil file explorer" })
+
+vim.api.nvim_set_keymap('n', '<leader>l', ':Pick buffers<CR>', { noremap = true, silent = true, desc = "Pick buffer" })
+vim.keymap.set('n', '<leader>dl', require("mini.bufremove").delete)

@@ -14,6 +14,7 @@ declare -A links=(
   ["$DOTDIR/nvim"]="$HOME/.config/nvim"
   ["$DOTDIR/zsh/.zshenv"]="$HOME/.zshenv"
   ["$DOTDIR/zsh/.zprofile"]="$HOME/.zprofile"
+  ["$DOTDIR/zsh/.p10k.zsh"]="$HOME/.p10k.zsh"
   ["$DOTDIR/tmux/"]="$HOME/.tmux"
 )
 

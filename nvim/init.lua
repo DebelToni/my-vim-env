@@ -11,7 +11,6 @@ require("config.myscripts.code_conceal")
 require("config.myscripts.code_hide")
 require("config.myscripts.removecomments")
 require("config.plugins.which-key")
-require("config.keybinds")
 -- require("config.dynamic_yank").start()
 require("config.myscripts.switch-to-english")
 require("config.myscripts.floating_terminal")
@@ -19,7 +18,10 @@ require("config.myscripts.move_upORdown_better_in_markdown")
 require("config.myscripts.narrow_buffer").setup()
 -- require("config.myscripts.prompt_search").setup { model = "llama3.2:1b",       endpoint = "http://localhost:11434/api/generate", max_context_lines = 400,  }
 require("LSP_config")
+require("mini.bufremove").setup()
+require("mini.pick").setup()
 
+require("config.keybinds")
 --Todo: make file for customisaion
 vim.opt.number = true
 vim.opt.relativenumber = true
