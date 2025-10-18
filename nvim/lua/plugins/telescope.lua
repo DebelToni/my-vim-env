@@ -8,6 +8,9 @@ return {
 		},
 		config = function()
 			local telescope = require("telescope")
+			local builtin = require("telescope.builtin")
+
+			vim.keymap.set({ "n" }, "<leader>si", builtin.grep_string, { desc = "Telescope live string" })
 
 			telescope.setup({
 				defaults = {
@@ -68,7 +71,7 @@ return {
 						layout_config = {
 							vertical = {
 								width = 0.999,
-								height = 1.999,
+								height = 0.999,
 								preview_height = 0.50,
 								mirror = true,
 								prompt_position = "bottom",

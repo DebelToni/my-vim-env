@@ -51,6 +51,10 @@ local function my_on_attach(args)
 		vim.keymap.set(m, lhs, rhs, { buffer = bufnr, desc = "LSP: " .. desc })
 	end
 	map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+	map("n", "<leader>gd",
+		function()
+			vim.cmd("keepalt vsplit | wincmd p"); vim.lsp.buf.definition({ reuse_win = true })
+		end, "Go to definition; keep current buffer in split")
 	map("n", "gr", vim.lsp.buf.references, "References")
 	map("n", "K", vim.lsp.buf.hover, "Hover")
 	map("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
