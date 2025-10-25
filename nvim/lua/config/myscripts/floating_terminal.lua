@@ -117,3 +117,19 @@ vim.api.nvim_set_keymap("n", "<M-c>", ":wa<CR>", {
 	callback = compile_c,
 	desc = "Compile current C file in floating terminal",
 })
+
+local function run_python()
+	local filename = vim.fn.expand("%:t") -- with extension
+	local cmd = "c\n" .. "python " .. filename .. "\n"
+
+	vim.cmd("Floaterminal")
+	-- vim.cmd("startinsert")
+	vim.api.nvim_feedkeys(cmd, "n", false)
+end
+
+vim.api.nvim_set_keymap("n", "<M-p>", ":wa<CR>", {
+	noremap = true,
+	silent = true,
+	callback = run_python,
+	desc = "Run current Python file in floating terminal",
+})

@@ -52,6 +52,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   eval "$(zoxide init --cmd cd zsh)"
   alias killAnyDesk="sudo pkill -9 -f AnyDesk"
   alias bat="bat"
+  alias codexa="codex --dangerously-bypass-approvals-and-sandbox"
   [[ -d "/opt/homebrew/opt/swift/bin" ]] && export PATH="/opt/homebrew/opt/swift/bin:$PATH"
   alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
   # function ls() {
