@@ -448,3 +448,10 @@ drawit(){
 # alias brlines="find ./ -type f -print0 | xargs -0 cat | wc -l"
 #
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+[[ -f ~/.config/secrets.zsh ]] && source ~/.config/secrets.zsh
+
+# Commands starting with a space won't be saved to history
+setopt HIST_IGNORE_SPACE
+# Reduce noise & duplicates
+setopt HIST_REDUCE_BLANKS HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
+
