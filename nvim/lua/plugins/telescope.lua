@@ -11,6 +11,7 @@ return {
 			local builtin = require("telescope.builtin")
 
 			vim.keymap.set({ "n" }, "<leader>si", builtin.grep_string, { desc = "Telescope live string" })
+			vim.keymap.set({ "n" }, "<leader>sr", builtin.lsp_references, { desc = "Telescope LSP references" })
 
 			telescope.setup({
 				defaults = {
@@ -67,6 +68,19 @@ return {
 						},
 					},
 					grep_string = {
+						layout_strategy = "vertical",
+						layout_config = {
+							vertical = {
+								width = 0.999,
+								height = 0.999,
+								preview_height = 0.50,
+								mirror = true,
+								prompt_position = "bottom",
+								preview_cutoff = 0,
+							},
+						},
+					},
+					lsp_references = {
 						layout_strategy = "vertical",
 						layout_config = {
 							vertical = {

@@ -30,7 +30,7 @@ local modes = { 'n', 'i', 'v', 'x', 's', 'o' } -- Normal, Insert, Visual, Select
 -- Telescope
 set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 set_keymap("n", "<leader>fa", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
-set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Grep text in files" })
+set_keymap("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Grep text in files" })
 set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "List buffers" })
 set_keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Help tags" })
 set_keymap("n", "<leader>fc", "<cmd>Telescope commands<cr>", { desc = "List commands" })
@@ -91,3 +91,11 @@ vim.api.nvim_set_keymap('n', '<leader>o', ':Oil<CR>', { noremap = true, silent =
 
 vim.api.nvim_set_keymap('n', '<leader>l', ':Pick buffers<CR>', { noremap = true, silent = true, desc = "Pick buffer" })
 vim.keymap.set('n', '<leader>dl', require("mini.bufremove").delete)
+
+for i = 1, 8 do
+	vim.api.nvim_set_keymap("n", "<Leader>" .. i, "<Cmd>tabnext " .. i .. "<CR>",
+		{ noremap = true, silent = true, desc = "Go to tab " .. i })
+end
+
+vim.api.nvim_set_keymap("n", "<leader>t", "<cmd>tabnew<CR>", { noremap = true, silent = true, desc = "Open new tab" })
+vim.api.nvim_set_keymap("n", "<leader>q", ":q<CR>", { noremap = true, silent = true, desc = "Open new tab" })
