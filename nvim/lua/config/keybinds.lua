@@ -99,3 +99,5 @@ end
 
 vim.api.nvim_set_keymap("n", "<leader>t", "<cmd>tabnew<CR>", { noremap = true, silent = true, desc = "Open new tab" })
 vim.api.nvim_set_keymap("n", "<leader>q", ":q<CR>", { noremap = true, silent = true, desc = "Open new tab" })
+vim.api.nvim_set_keymap("v", "<leader>n", ":norm ", { noremap = true, silent = true, desc = "norm" })
+vim.api.nvim_set_keymap("n", "<leader>n", ":norm ", { noremap = true, silent = true, desc = "norm" })

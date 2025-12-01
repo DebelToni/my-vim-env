@@ -131,7 +131,9 @@ vim.lsp.config("yamlls", {
 })
 
 -- TypeScript/JavaScript
-vim.lsp.config("tsserver", {
+vim.lsp.config("ts_ls", {
+	-- optional: make single-file / simple-project roots easier to detect
+	root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
 	settings = {
 		typescript = {
 			inlayHints = {
@@ -180,9 +182,9 @@ vim.lsp.enable({
 	"bashls", -- Bash
 	"lua_ls", -- Lua
 	"pyright", -- Python
-	"html",  -- HTML
+	"html", -- HTML
 	"cssls", -- CSS
-	"tsserver", -- JS/TS
+	"ts_ls", -- JS/TS
 	"yamlls", -- YAML
 	-- "jdtls"     -- java needs its own dir
 })
