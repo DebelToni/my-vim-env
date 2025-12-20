@@ -48,11 +48,15 @@ fi
 
 # 5) OS-specific tweaks & aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias arxiv="~/Documents/arxiv"
   export PATH="$HOME/bin:$PATH"
   eval "$(zoxide init --cmd cd zsh)"
   alias killAnyDesk="sudo pkill -9 -f AnyDesk"
   alias bat="bat"
   alias codexa="codex --dangerously-bypass-approvals-and-sandbox"
+  alias copilota=" copilot --allow-all-tools --allow-all-paths --add-dir --resume"
+  alias cr="codex --dangerously-bypass-approvals-and-sandbox resume"
+  # alias openg="open --url $(git remote get-url origin)"
   [[ -d "/opt/homebrew/opt/swift/bin" ]] && export PATH="/opt/homebrew/opt/swift/bin:$PATH"
   # alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale # fixed on installing binary in bath throught the tailscale pannel
   # function ls() {
@@ -82,6 +86,7 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 fi
 
 # 6) Aliases & functions
+alias r2='s5cmd --endpoint-url "$R2_ENDPOINT"'
 alias n='nvim'
 alias psql-size='psql -U postgres -h localhost -p 5432 -c "SELECT d.datname AS database, pg_size_pretty(pg_database_size(d.datname)) AS size FROM pg_database d WHERE NOT d.datistemplate ORDER BY pg_database_size(d.datname) DESC;"'
 
@@ -95,6 +100,54 @@ pg-table-sizes-all(){ psql -U postgres -h localhost -p 5432 -At -c "SELECT datna
 
 
 # Add this to ~/.bashrc, ~/.zshrc, or wherever you keep your shell functions:
+r2comp() {
+  local bucket="${1:-s3://giant-data}"
+  local endpoint="${R2_ENDPOINT}"
+
+  if [[ -z "$endpoint" ]]; then
+    echo "R2_ENDPOINT is not set" >&2
+    return 1
+  fi
+
+  # temp files for sorted lists
+  local tmp_remote tmp_local
+  tmp_remote="$(mktemp -t r2_remote.XXXXXX)" || return 1
+  tmp_local="$(mktemp -t r2_local.XXXXXX)" || { rm -f "$tmp_remote"; return 1; }
+
+  # --- build remote list: "SIZE KEY"
+  s5cmd --endpoint-url "$endpoint" ls "${bucket}/*" \
+    | awk 'NF >= 4 && $3 ~ /^[0-9]+$/ {
+             size=$3
+             $1=$2=$3=""
+             sub(/^ +/, "")
+             print size " " $0
+           }' \
+    | sort > "$tmp_remote"
+
+  # --- build local list: "SIZE RELATIVE_PATH"
+  python3 - << 'PY' > "$tmp_local"
+import os
+
+for root, dirs, files in os.walk('.'):
+    for name in files:
+        path = os.path.join(root, name)
+        rel = os.path.relpath(path, '.')
+        size = os.path.getsize(path)
+        print(f"{size} {rel}")
+PY
+
+  sort -o "$tmp_local" "$tmp_local"
+
+  echo "== In bucket but missing locally (by name+size) =="
+  comm -23 "$tmp_remote" "$tmp_local" || true
+
+  echo
+  echo "== Local extra files not in bucket (by name+size) =="
+  comm -13 "$tmp_remote" "$tmp_local" || true
+
+  rm -f "$tmp_remote" "$tmp_local"
+}
+
 
 eza-ls() {
   if [ $# -eq 0 ]; then
@@ -234,3 +287,6 @@ setopt HIST_IGNORE_SPACE
 # Reduce noise & duplicates
 setopt HIST_REDUCE_BLANKS HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
 
+
+# Added by Antigravity
+export PATH="/Users/antonhristov/.antigravity/antigravity/bin:$PATH"

@@ -1,0 +1,120 @@
+Itwant you to create the best AI tab completition competitor for my NeoVIM setup in LUA.
+
+To start here is how to make a general request in python to my LLM API of choice:
+```python
+from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com/beta", #fill in the middle requires the /beta
+)
+
+response = client.completions.create(
+    model="deepseek-chat",
+    prompt="def fib(a):",
+    suffix="    return fib(a-1) + fib(a-2)",
+    max_tokens=128
+)
+print(response.choices[0].text)
+
+messages = [
+    {"role": "user", "content": "Please write quick sort code"},
+    {"role": "assistant", "content": "```python\n", "prefix": True}
+]
+response = client.chat.completions.create(
+    model="deepseek-chat",
+    messages=messages,
+    stop=["```"],
+)
+print(response.choices[0].message.content)
+```
+
+This is in python but for our lua thing we will need curl - you can figure out what to do.
+
+So my idea for tab AI completition is this:
+I will write metaprogram tags in comments around a funciton or a block of code. When I press a specific keybind we will send the buffer info to a FIM LLM or a general purpose chat completitions LLM and insert the thing it returns in the block.
+
+Preaty simple but I want to make it powerful and good looking with these things:
+1. We will have a solit animation for it. We will use the node installintion 2x3 dots rectenge thing that indicates loading while we are waiting the request and we will have an option for streaming=True and we will get the code written in front of our eyes. If streaming=False just loading until full responce ready than paste it right in.
+2. Metatags. We will define our custom language to give more context and specification to the AI. We will use the treesitter/LSP knwleadge for knowing what is a comment in the current buffer and after a comment we will put @<name_of_tag>. (if we don't know the comment type for the current file we will deafult to "--- @" but for a C/Java like we will have "// @" or python "# @" and so on. Right now the tags I have in mind are:
+--- @param <name_of_param> <type_of_param>
+--- @param age number
+
+--- @return <type>
+--- @return MyClassObject
+
+--- @note <text>
+--- @note when implementing this use XXX and not YYY
+
+--- @include <path_to_file>
+--- @include folder/Class.java
+(this flag is used to give context to the llm eg when passed like above the llm will get appeneded to the message "Additional content:\n Class.java\n <filecontent". This will be used to guide the llm to a class implementation or something similiar for more accurate code generation)
+
+--- @
+(empty tag!)
+
+
+2. We will use treesitter/LSP for making the marks look coloured (like they are part of the program). 
+
+3. when our cursor is between a set of marks or on top of such and we press <leader>G we ask the llm to generate code inside of the current block of marks. Example we have this code:
+--- @param age number
+--- @return bool
+def is_of_age(age):
+
+--- @ 
+If our cursor is on any of those for lines and we press <leader>G an animation should start in the block. When we get the reposnce it should be something like this:
+--- @param age number
+--- @return bool
+def is_of_age(age):
+    if(age>18):
+	    return True
+	else:
+	    return False
+--- @ 
+
+(important thing is that we keep params between generation!)
+
+In this the LLM saw something like:
+system: You are a coding assistant. @param A B tag means the next block of code uses param_name A that is of type B. @return ...... You should output the hole code that sits between the metatags. Your responce will overwrite anything in between so if you want to keep something write it out again.
+user: Suggest a new code between the block of params:
+--- @param age number
+--- @return bool
+def is_of_age(age):
+
+--- @ 
+
+Then the llm suggests something and whatever it suggests gets replaced into the file.
+
+Thought of these generation modes:
+<leader>G - the llm gets context only form the param blocks
+<leader>gb - the llm gets context from the hole buffer
+<leader>gf - the llm gets context from the hole buffer and a list of all non-gitignored files and foldersr next to where the buffer lives.
+<leader>gc - same as above but instead of the pwd of the buffer the pwd of the neovim process. This is because when I code I start neovim from the project root. (gc is short for generate from codebase)
+
+At any point the LLM gets a "tools" list of tools where he has "read_file" and can be called with a list of files. This is for the llm to gather more context - it can see that not enought info is presant and can see that some file names indicate their are relevant so it uses read_files("file_a","file_b"...). At some point when the final info is gathered it will respond and snap code in place. 
+Another tool is just "list_dir" with a path but this should not show gitignored or dotfiles. 
+
+While all of this is happening we should see a cool visualisation of the LLM like this:
+Thinking..
+Thinking......
+Listed directory "./" ...
+Reading file A, B...
+Listed directory "some_folder" ..
+Reading file some_folder/C..........
+(read_file should work with paths like "../ClassImplementation.py" because the llm can see fomr the buffer something is imported like import ..something and thus the llm might want to look in the dir above. JUST throw an error if it tries to read a dot file or something gitignored if somehow it guesses the name because such things should not even be in the "list_dir" tool)
+
+
+Also for <leader>gb (which is generate with buffer info) and <leader>gf (which is generate with folder info) the LLM should have the tool to find uses of a centain keyword/class/variable/object in the project with LSP references - telescope.builtin.lsp_references
+
+Other notes for the project:
+- The scipts use from the current env the "VIM_AI_KEY" and "VIM_MODEL" and "VIM_BASE_URL" to know to where to request a model completition.
+- if some of these are missing we will deafult for the 2 but for the API key we will throw a vim message as error. The deafults for the url and model are as shown in the code example the deepseek ones.
+- For now try chat completition mode and no Fill in the middle models.
+- look for the latest JSON schemas and output and input formats for using TOOLS with OpenAI API SDK compatable urls so your first suggestion works form the first time
+
+
+----------
+
+
+Implement a fully complete NeoVIM system for this AI generation swiss army knife. Give me a 1 big .lua file that I will paste next to my ocnfig and require it and watch the magic happens!

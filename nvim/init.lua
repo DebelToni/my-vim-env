@@ -22,6 +22,7 @@ require("mini.bufremove").setup()
 require("mini.pick").setup()
 
 require("config.keybinds")
+require("AI").setup()
 --Todo: make file for customisaion
 vim.opt.number = true
 vim.opt.relativenumber = true
