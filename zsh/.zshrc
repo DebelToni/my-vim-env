@@ -3,6 +3,20 @@
 # 1) pull in login-shell exports/env first
 [[ -f ~/.zprofile ]] && source ~/.zprofile
 export ZSH="$HOME/.oh-my-zsh"
+
+# Auto-attach to tmux session "AI" when SSH'ing into this macOS host.
+# - interactive shells only
+# - only over SSH
+# - don't nest tmux inside tmux
+if [[ "$OSTYPE" == "darwin"* ]] \
+  && [[ $- == *i* ]] \
+  && [[ -n "${SSH_CONNECTION}${SSH_CLIENT}${SSH_TTY}" ]] \
+  && [[ -z "${TMUX}" ]]; then
+  if command -v tmux >/dev/null 2>&1; then
+    tmux attach -t AI 2>/dev/null || tmux new -s AI
+  fi
+fi
+
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # ─── Bootstrap Oh My Zsh plugins if missing ────────────────────────────────────
@@ -98,7 +112,50 @@ alias psql-size='psql -U postgres -h localhost -p 5432 -c "SELECT d.datname AS d
 
 pg-table-sizes-all(){ psql -U postgres -h localhost -p 5432 -At -c "SELECT datname FROM pg_database WHERE NOT datistemplate;" | while read -r db; do echo "=== $db ==="; psql -U postgres -h localhost -p 5432 -d "$db" -c "SELECT n.nspname AS schema, c.relname AS table, pg_size_pretty(pg_total_relation_size(c.oid)) AS total_size, pg_total_relation_size(c.oid) AS total_bytes FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE c.relkind IN ('r','p','m') AND n.nspname NOT IN ('pg_catalog','information_schema') ORDER BY total_bytes DESC${1:+ LIMIT $1};"; done; }
 
-
+typ() {
+    if [ -z "$1" ]; then
+        echo "Usage: typ <file.typ>"
+        return 1
+    fi
+    
+    local typfile="$1"
+    local pdffile="${typfile%.typ}.pdf"
+    local port=12345
+    local tailscale_ip=$(tailscale ip -4)
+    local url="http://${tailscale_ip}:${port}/${pdffile}"
+    
+    # Cleanup function
+    cleanup() {
+        echo -e "\n\nStopping processes..."
+        kill $typst_pid $server_pid 2>/dev/null
+        exit 0
+    }
+    
+    trap cleanup INT TERM
+    
+    # Start typst watch
+    typst watch "$typfile" &
+    typst_pid=$!
+    
+    # Start Python HTTPS server
+    python3 -m http.server "$port" &
+    server_pid=$!
+    
+    # Wait a moment for server to start
+    sleep 1
+    
+    # Copy URL to clipboard via OSC52 through tmux
+    printf "\033Ptmux;\033\033]52;c;$(printf "%s" "$url" | base64)\a\033\\" > /dev/tty
+    
+    echo "✓ Typst watching: $typfile"
+    echo "✓ Server running on port $port"
+    echo "✓ URL copied to clipboard: $url"
+    echo ""
+    echo "Press Ctrl+C to stop"
+    
+    # Wait for both processes
+    wait
+}
 # Add this to ~/.bashrc, ~/.zshrc, or wherever you keep your shell functions:
 r2comp() {
   local bucket="${1:-s3://giant-data}"
@@ -286,7 +343,3 @@ export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 setopt HIST_IGNORE_SPACE
 # Reduce noise & duplicates
 setopt HIST_REDUCE_BLANKS HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
-
-
-# Added by Antigravity
-export PATH="/Users/antonhristov/.antigravity/antigravity/bin:$PATH"
