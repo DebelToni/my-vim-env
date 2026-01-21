@@ -4,4 +4,5 @@ fi
 
 if [[ "$(uname)" != "Darwin" ]]; then
 	. "$HOME/.cargo/env"
+	export PATH="$HOME/bin:$PATH"
 fi

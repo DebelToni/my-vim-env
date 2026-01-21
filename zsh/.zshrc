@@ -60,6 +60,8 @@ if [[ -n "$GHOSTTY_RESOURCES_DIR" ]]; then
   plugins+=(zsh-syntax-highlighting)
 fi
 
+export EDITOR="nvim"
+
 # 5) OS-specific tweaks & aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
   alias arxiv="~/Documents/arxiv"
@@ -68,6 +70,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   alias killAnyDesk="sudo pkill -9 -f AnyDesk"
   alias bat="bat"
   alias codexa="codex --dangerously-bypass-approvals-and-sandbox"
+  alias o="opencode"
+  alias coc="~/.config/opencode"
+  # alias cf='codex --dangerously-bypass-approvals-and-sandbox --model gpt-5.2 -c model_reasoning_effort=low exec'
+
   alias copilota=" copilot --allow-all-tools --allow-all-paths --add-dir --resume"
   alias cr="codex --dangerously-bypass-approvals-and-sandbox resume"
   # alias openg="open --url $(git remote get-url origin)"
@@ -156,7 +162,7 @@ typ() {
     # Wait for both processes
     wait
 }
-# Add this to ~/.bashrc, ~/.zshrc, or wherever you keep your shell functions:
+
 r2comp() {
   local bucket="${1:-s3://giant-data}"
   local endpoint="${R2_ENDPOINT}"
@@ -224,6 +230,7 @@ alias py='python3'
 alias lgit='lazygit'
 alias ldocker='lazydocker'
 alias cdu='cd ../'
+alias cduu='cd ../../'
 alias c='clear -x'
 alias update-giant='rm *.* && cp -r ~/Documents/ml/SUPER-GIANT/v1/model/*.* . && cp ~/Documents/ml/SUPER-GIANT/Model_Overview.md .'
 cdf() {
@@ -332,7 +339,7 @@ vimouse(){
 
 drawit(){
 	cd ~/Documents/python/drawIT
-	source ../py/bin/activate
+	source ~/v/py/bin/activate
 	python drawit.py
 }
 
@@ -343,3 +350,6 @@ export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 setopt HIST_IGNORE_SPACE
 # Reduce noise & duplicates
 setopt HIST_REDUCE_BLANKS HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
+
+# opencode
+export PATH=/Users/antonhristov/.opencode/bin:$PATH
