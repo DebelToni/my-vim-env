@@ -11,6 +11,7 @@ require("config.myscripts.code_conceal")
 require("config.myscripts.code_hide")
 require("config.myscripts.removecomments")
 require("config.plugins.which-key")
+require("config.align").setup()
 -- require("config.dynamic_yank").start()
 require("config.myscripts.switch-to-english")
 require("config.myscripts.floating_terminal")
@@ -22,7 +23,7 @@ require("mini.bufremove").setup()
 require("mini.pick").setup()
 
 require("config.keybinds")
-require("AI").setup()
+require("AI")
 --Todo: make file for customisaion
 vim.opt.number = true
 vim.opt.relativenumber = true

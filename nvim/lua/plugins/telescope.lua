@@ -1,18 +1,58 @@
--- telescope.lua (fixed full-buffer + top preview for grep)
+-- Telescope (single file config)
+-- NOTE: ripgrep is an external binary (recommended):
+--   macOS: brew install ripgrep
+
 return {
 	{
 		"nvim-telescope/telescope.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"BurntSushi/ripgrep",
+
+			-- Keep all Telescope-related plugins in one place:
+			"nvim-telescope/telescope-ui-select.nvim",
+
+			-- If you *really* want this in lazy, you can keep it,
+			-- but it's not required and ripgrep is usually installed via your package manager.
+			-- "BurntSushi/ripgrep",
 		},
 		config = function()
+			-- =========================================================================
+			-- Requires
+			-- =========================================================================
 			local telescope = require("telescope")
 			local builtin = require("telescope.builtin")
+			local actions = require("telescope.actions")
+			local action_state = require("telescope.actions.state")
 
+			-- =========================================================================
+			-- Global keymaps (outside Telescope UI)
+			-- =========================================================================
 			vim.keymap.set({ "n" }, "<leader>si", builtin.grep_string, { desc = "Telescope live string" })
 			vim.keymap.set({ "n" }, "<leader>sr", builtin.lsp_references, { desc = "Telescope LSP references" })
 
+			-- =========================================================================
+			-- Helper actions: switch pickers while keeping the current prompt text
+			-- =========================================================================
+			local function get_prompt(prompt_bufnr)
+				local picker = action_state.get_current_picker(prompt_bufnr)
+				return picker and picker:_get_prompt() or ""
+			end
+
+			local function switch_to_live_grep(prompt_bufnr)
+				local text = get_prompt(prompt_bufnr)
+				actions.close(prompt_bufnr)
+				builtin.live_grep({ default_text = text })
+			end
+
+			local function switch_to_find_files(prompt_bufnr)
+				local text = get_prompt(prompt_bufnr)
+				actions.close(prompt_bufnr)
+				builtin.find_files({ default_text = text })
+			end
+
+			-- =========================================================================
+			-- Telescope setup
+			-- =========================================================================
 			telescope.setup({
 				defaults = {
 					hidden = true,
@@ -23,22 +63,47 @@ return {
 						".git/",
 						".mypy_cache",
 					},
-					mappings = {
-						i = {
-							-- ["<C-j>"] = require('telescope.actions').move_selection_next,
-							-- ["<C-k>"] = require('telescope.actions').move_selection_previous,
+
+					layout_strategy = "vertical",
+					layout_config = {
+						vertical = {
+							width = 0.999,
+							height = 0.999,
+							preview_height = 0.50,
+							mirror = true, -- preview on top
+							prompt_position = "bottom",
+							preview_cutoff = 0,
 						},
+					},
+
+					mappings = {
+						-- Insert mode mappings *inside Telescope*
+						i = {
+							-- IMPORTANT: <C-g> can incur timeoutlen delay unless nowait=true
+							["<C-g>"] = { switch_to_live_grep, type = "action", opts = { nowait = true, silent = true } },
+							["<C-f>"] = { switch_to_find_files, type = "action", opts = { nowait = true, silent = true } },
+						},
+
+						-- Normal mode mappings *inside Telescope*
 						n = {
-							["j"] = require("telescope.actions").move_selection_previous,
-							["k"] = require("telescope.actions").move_selection_next,
-							["<CR>"] = require("telescope.actions").select_default,
-							["<S-x>"] = require("telescope.actions").select_horizontal,
-							["<S-v>"] = require("telescope.actions").select_vertical,
-							["<S-t>"] = require("telescope.actions").select_tab,
+							["j"] = actions.move_selection_previous,
+							["k"] = actions.move_selection_next,
+
+							["<CR>"] = actions.select_default,
+							["<S-x>"] = actions.select_horizontal,
+							["<S-v>"] = actions.select_vertical,
+							["<S-t>"] = actions.select_tab,
+
+							-- your existing disable
 							["S-v"] = false,
+
+							-- Switch picker, keep the text you've typed
+							["<C-g>"] = { switch_to_live_grep, type = "action", opts = { nowait = true, silent = true } },
+							["<C-f>"] = { switch_to_find_files, type = "action", opts = { nowait = true, silent = true } },
 						},
 					},
 				},
+
 				pickers = {
 					find_files = {
 						hidden = true,
@@ -52,48 +117,11 @@ return {
 						},
 					},
 
-					-- Full-buffer grep with preview on TOP (50%) and results+prompt on bottom (50%)
-					live_grep = {
-						layout_strategy = "vertical",
-						layout_config = {
-							-- IMPORTANT: use < 1.0 so Telescope treats it as a fraction, not absolute cells
-							vertical = {
-								width = 0.999,
-								height = 0.999,
-								preview_height = 0.50, -- top pane height
-								mirror = true, -- put preview ABOVE results
-								prompt_position = "bottom",
-								preview_cutoff = 0, -- never hide preview
-							},
-						},
-					},
-					grep_string = {
-						layout_strategy = "vertical",
-						layout_config = {
-							vertical = {
-								width = 0.999,
-								height = 0.999,
-								preview_height = 0.50,
-								mirror = true,
-								prompt_position = "bottom",
-								preview_cutoff = 0,
-							},
-						},
-					},
-					lsp_references = {
-						layout_strategy = "vertical",
-						layout_config = {
-							vertical = {
-								width = 0.999,
-								height = 0.999,
-								preview_height = 0.50,
-								mirror = true,
-								prompt_position = "bottom",
-								preview_cutoff = 0,
-							},
-						},
-					},
+					live_grep = {},
+					grep_string = {},
+					lsp_references = {},
 				},
+
 				extensions = {
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown({}),
@@ -101,10 +129,10 @@ return {
 				},
 			})
 
-			telescope.load_extension("ui-select")
+			-- =========================================================================
+			-- Extensions
+			-- =========================================================================
+			pcall(telescope.load_extension, "ui-select")
 		end,
-	},
-	{
-		"nvim-telescope/telescope-ui-select.nvim",
 	},
 }
