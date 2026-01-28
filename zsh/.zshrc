@@ -64,10 +64,10 @@ export EDITOR="nvim"
 
 # 5) OS-specific tweaks & aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  alias arxiv="~/Documents/arxiv"
   export PATH="$HOME/bin:$PATH"
   eval "$(zoxide init --cmd cd zsh)"
   alias killAnyDesk="sudo pkill -9 -f AnyDesk"
+  alias s3=" source ~/.env-R2 && source ~/v/SG/bin/activate && python ~/Documents/ML/SUPER-GIANT/CICD/tools/s3.py"
   alias bat="bat"
   alias codexa="codex --dangerously-bypass-approvals-and-sandbox"
   alias o="opencode"
