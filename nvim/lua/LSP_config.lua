@@ -187,4 +187,5 @@ vim.lsp.enable({
 	"ts_ls", -- JS/TS
 	"yamlls", -- YAML
 	-- "jdtls"     -- java needs its own dir
+	"jsonls",
 })

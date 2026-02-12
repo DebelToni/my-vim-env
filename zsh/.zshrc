@@ -67,7 +67,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   export PATH="$HOME/bin:$PATH"
   eval "$(zoxide init --cmd cd zsh)"
   alias killAnyDesk="sudo pkill -9 -f AnyDesk"
-  alias s3=" source ~/.env-R2 && source ~/v/SG/bin/activate && python ~/Documents/ML/SUPER-GIANT/CICD/tools/s3.py"
+  alias s3=" source ~/.env-R2 && python3 ~/Documents/ML/SUPER-GIANT/CICD/tools/s3.py"
+  export S3_BUCKET="giant-data"
   alias bat="bat"
   alias codexa="codex --dangerously-bypass-approvals-and-sandbox"
   alias o="opencode"
@@ -117,6 +118,39 @@ alias psql-size='psql -U postgres -h localhost -p 5432 -c "SELECT d.datname AS d
 # Put this in ~/.bashrc or ~/.zshrc
 
 pg-table-sizes-all(){ psql -U postgres -h localhost -p 5432 -At -c "SELECT datname FROM pg_database WHERE NOT datistemplate;" | while read -r db; do echo "=== $db ==="; psql -U postgres -h localhost -p 5432 -d "$db" -c "SELECT n.nspname AS schema, c.relname AS table, pg_size_pretty(pg_total_relation_size(c.oid)) AS total_size, pg_total_relation_size(c.oid) AS total_bytes FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE c.relkind IN ('r','p','m') AND n.nspname NOT IN ('pg_catalog','information_schema') ORDER BY total_bytes DESC${1:+ LIMIT $1};"; done; }
+
+# Run "typst compile ..." and if it succeeds, open the compiled PDF.
+typst() {
+  if [[ "$1" == "compile" ]]; then
+    # Forward everything to the real typst binary first
+    command typst "$@" || return $?
+
+    # Determine the output PDF path, then open it.
+    local input="$2"
+    local out=""
+
+    # If user explicitly passed -o/--output, respect it.
+    for (( i=1; i <= $#; i++ )); do
+      if [[ "${@[$i]}" == "-o" || "${@[$i]}" == "--output" ]]; then
+        out="${@[$((i+1))]}"
+        break
+      fi
+    done
+
+    # Default output is "<input without .typ>.pdf" in the same directory.
+    if [[ -z "$out" ]]; then
+      out="${input%.typ}.pdf"
+    fi
+
+    # Only open if it exists (extra safety)
+    [[ -f "$out" ]] && open "$out"
+    return 0
+  fi
+
+  # For any other typst subcommand, behave normally.
+  command typst "$@"
+}
+
 
 typ() {
     if [ -z "$1" ]; then

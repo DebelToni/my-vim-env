@@ -23,7 +23,8 @@ require("mini.bufremove").setup()
 require("mini.pick").setup()
 
 require("config.keybinds")
-require("AI")
+require("config.typst_compile_keybind")
+-- require("AI")
 --Todo: make file for customisaion
 vim.opt.number = true
 vim.opt.relativenumber = true
