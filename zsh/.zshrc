@@ -60,7 +60,12 @@ if [[ -n "$GHOSTTY_RESOURCES_DIR" ]]; then
   plugins+=(zsh-syntax-highlighting)
 fi
 
-export EDITOR="nvim"
+# opencode editor:
+# export EDITOR="nvim"
+export OPENCODE_NVIM_SERVER="$HOME/.cache/nvim/opencode.pipe"
+export OPENCODE_NVIM_TMUX_WINDOW="o-nvim"
+export EDITOR="$HOME/bin/opencode-editor-tmux"
+
 
 # 5) OS-specific tweaks & aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then

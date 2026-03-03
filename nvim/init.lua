@@ -25,7 +25,8 @@ require("mini.pick").setup()
 require("config.keybinds")
 require("config.typst_compile_keybind")
 -- require("AI")
---Todo: make file for customisaion
+-- require("opencode_copilot")
+-- require("opencode_copilot_chat").setup({ server_url = "http://127.0.0.1:4096", provider_id = "cerebras", model_id = "gpt-oss-120b", auto_start_server = false, })
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.wrap = true

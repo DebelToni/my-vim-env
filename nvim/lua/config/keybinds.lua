@@ -87,7 +87,7 @@ vim.api.nvim_set_keymap('n', '<leader>dm', '<cmd>NoiceDismiss<CR>',
 
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true, desc = "Exit terminal mode" })
 
-vim.api.nvim_set_keymap('n', '<leader>o', ':Oil<CR>', { noremap = true, silent = true, desc = "Open oil file explorer" })
+vim.api.nvim_set_keymap('n', '<leader>m', ':Oil<CR>', { noremap = true, silent = true, desc = "Open oil file explorer" })
 
 vim.api.nvim_set_keymap('n', '<leader>l', ':Pick buffers<CR>', { noremap = true, silent = true, desc = "Pick buffer" })
 vim.keymap.set('n', '<leader>dl', require("mini.bufremove").delete)
@@ -103,3 +103,5 @@ vim.api.nvim_set_keymap("v", "<leader>n", ":norm ", { noremap = true, silent = t
 vim.api.nvim_set_keymap("n", "<leader>n", ":norm ", { noremap = true, silent = true, desc = "norm" })
 
 vim.api.nvim_set_keymap("n", "<leader>gi", ":Gitsigns ", { noremap = true, silent = true, desc = "norm" })
+
+vim.api.nvim_set_keymap("n", "<leader>w", "<cmd>w | bd<CR>", { noremap = true, silent = true, desc = "norm" })

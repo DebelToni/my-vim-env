@@ -1,0 +1,141 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+# fastc: headless Claude Code runner with short numeric session IDs + resume
+# Usage:
+#   fastc "prompt"
+#   fastc continue [N] "prompt"
+
+sessions_file="/tmp/claude.session.ids"
+[[ -e "$sessions_file" ]] || : > "$sessions_file"
+
+action="new"
+short_id=""
+session_uuid=""
+prompt=""
+
+if [[ "${1-}" == "continue" ]]; then
+  action="continue"
+  shift
+  if [[ "${1-}" =~ ^[0-9]+$ ]]; then
+    short_id="$1"
+    shift
+  else
+    short_id="1"
+  fi
+else
+  # next numeric id = max(existing)+1, or 1 if empty
+  short_id="$(
+    awk -F= '
+      $1 ~ /^[0-9]+$/ && NF >= 2 { if ($1 > m) m = $1 }
+      END { print (m ? m+1 : 1) }
+    ' "$sessions_file"
+  )"
+fi
+
+prompt="$*"
+if [[ -z "$prompt" ]]; then
+  echo 'usage: fastc "prompt" | fastc continue [N] "prompt"' >&2
+  exit 2
+fi
+
+if [[ "$action" == "continue" ]]; then
+  session_uuid="$(
+    awk -F= -v id="$short_id" '
+      $1 == id && NF >= 2 { print $2; exit }
+    ' "$sessions_file"
+  )"
+  if [[ -z "$session_uuid" ]]; then
+    echo "fastc: no such session $short_id (missing in $sessions_file)" >&2
+    exit 1
+  fi
+fi
+
+tmp_out="$(mktemp -t claude.fast.out.XXXXXX 2>/dev/null || mktemp "/tmp/claude.fast.out.XXXXXX")"
+tmp_err="$(mktemp -t claude.fast.err.XXXXXX 2>/dev/null || mktemp "/tmp/claude.fast.err.XXXXXX")"
+
+# Optional knobs via env
+model="${CLAUDE_MODEL:-sonnet}"                  # e.g. opus/sonnet or a full model name your CLI supports
+allowed_tools="${CLAUDE_ALLOWED_TOOLS:-}"        # e.g. "Bash,Read,Edit" (leave empty for default approvals)
+fork="${CLAUDE_FORK_SESSION:-0}"                 # 1 => add --fork-session on resume
+extra_args=()
+
+if [[ -n "$allowed_tools" ]]; then
+  extra_args+=(--allowedTools "$allowed_tools")
+fi
+
+# Run claude: keep stdout JSON clean, capture stderr separately
+if [[ "$action" == "continue" ]]; then
+  resume_args=(--resume "$session_uuid")
+  if [[ "$fork" == "1" ]]; then
+    resume_args+=(--fork-session)
+  fi
+  command claude --model "$model" -p --output-format json "${extra_args[@]}" \
+    "${resume_args[@]}" "$prompt" >"$tmp_out" 2>"$tmp_err" || true
+else
+  command claude --model "$model" -p --output-format json "${extra_args[@]}" \
+    "$prompt" >"$tmp_out" 2>"$tmp_err" || true
+fi
+
+rc=$?
+
+# If Claude produced no stdout JSON, show stderr and exit with Claude rc
+if [[ ! -s "$tmp_out" ]]; then
+  if [[ -s "$tmp_err" ]]; then
+    cat "$tmp_err" >&2
+  else
+    echo "fastc: claude produced no output (stdout empty)" >&2
+  fi
+  rm -f "$tmp_out" "$tmp_err"
+  exit "$rc"
+fi
+
+# Parse JSON safely (never let jq kill the script under set -e)
+result=""
+new_uuid=""
+
+if command -v jq >/dev/null 2>&1; then
+  result="$(jq -r '.result // ""' < "$tmp_out" 2>/dev/null || true)"
+  new_uuid="$(jq -r '.session_id // ""' < "$tmp_out" 2>/dev/null || true)"
+else
+  result="$(
+    python3 - <<'PY' < "$tmp_out" 2>/dev/null || true
+import json,sys
+o=json.load(sys.stdin)
+print(o.get("result",""))
+PY
+  )"
+  new_uuid="$(
+    python3 - <<'PY' < "$tmp_out" 2>/dev/null || true
+import json,sys
+o=json.load(sys.stdin)
+print(o.get("session_id",""))
+PY
+  )"
+fi
+
+# Print like your Codex wrapper
+print -r -- "session id: $short_id"
+
+if [[ -n "$result" ]]; then
+  print -r -- "$result"
+else
+  # If result is empty, show stderr (if any) and the raw JSON for debugging.
+  if [[ -s "$tmp_err" ]]; then
+    cat "$tmp_err" >&2
+  fi
+  cat "$tmp_out"
+fi
+
+# Persist mapping for new sessions
+if [[ "$action" == "new" ]]; then
+  if [[ -n "$new_uuid" ]]; then
+    printf '%s=%s\n' "$short_id" "$new_uuid" >> "$sessions_file"
+  else
+    echo "fastc: warning: couldn’t capture session_id to store in $sessions_file" >&2
+  fi
+fi
+
+rm -f "$tmp_out" "$tmp_err"
+exit "$rc"
+

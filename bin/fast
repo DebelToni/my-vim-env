@@ -1,0 +1,97 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+sessions_file="/tmp/codex.session.ids"
+[[ -e "$sessions_file" ]] || : > "$sessions_file"
+
+action="new"
+short_id=""
+uuid=""
+prompt=""
+
+if [[ "${1-}" == "continue" ]]; then
+  action="continue"
+  shift
+  if [[ "${1-}" =~ ^[0-9]+$ ]]; then
+    short_id="$1"
+    shift
+  else
+    short_id="1"
+  fi
+else
+  # next numeric id = max(existing)+1, or 1 if empty
+  short_id="$(
+    awk -F= '
+      $1 ~ /^[0-9]+$/ && NF >= 2 { if ($1 > m) m = $1 }
+      END { print (m ? m+1 : 1) }
+    ' "$sessions_file"
+  )"
+fi
+
+prompt="$*"
+if [[ -z "$prompt" ]]; then
+  echo 'usage: fast "prompt" | fast continue [N] "prompt"' >&2
+  exit 2
+fi
+
+if [[ "$action" == "continue" ]]; then
+  uuid="$(
+    awk -F= -v id="$short_id" '
+      $1 == id && NF >= 2 { print $2; exit }
+    ' "$sessions_file"
+  )"
+  if [[ -z "$uuid" ]]; then
+    echo "fast: no such session $short_id (missing in $sessions_file)" >&2
+    exit 1
+  fi
+fi
+
+tmp="$(mktemp -t codex.fast.XXXXXX 2>/dev/null || mktemp "/tmp/codex.fast.XXXXXX")"
+
+run_and_filter() {
+  tee "$tmp" | awk -v sid="$short_id" '
+    BEGIN { state=0; printed=0 }
+    { sub(/\r$/, "") }
+    /^[[:space:]]*tokens used/ { state=1; next }  # next line is the number
+    state==1                 { state=2; next }    # skip the number line
+    state==2 {
+      if (!printed) { print "session id: " sid; printed=1 }
+      print
+    }
+  '
+}
+
+if [[ "$action" == "continue" ]]; then
+  command codex \
+    --full-auto \
+    --model gpt-5.1-codex-mini \
+    -c model_reasoning_effort=low \
+    exec "$prompt" resume "$uuid" 2>&1 \
+  | run_and_filter
+else
+  command codex \
+    --full-auto \
+    --model gpt-5.1-codex-mini \
+    -c model_reasoning_effort=low \
+    exec "$prompt" 2>&1 \
+  | run_and_filter
+fi
+
+# exit code of codex (not awk/tee)
+rc="${pipestatus[1]}"
+
+# for new sessions: capture UUID and persist N=UUID
+if [[ "$action" == "new" ]]; then
+  new_uuid="$(
+    grep -m1 -E 'session id:[[:space:]]*[0-9a-f-]+' "$tmp" \
+    | sed -E 's/.*session id:[[:space:]]*([0-9a-f-]+).*/\1/'
+  )"
+  if [[ -n "$new_uuid" ]]; then
+    printf '%s=%s\n' "$short_id" "$new_uuid" >> "$sessions_file"
+  else
+    echo "fast: warning: couldn’t capture session id to store in $sessions_file" >&2
+  fi
+fi
+
+rm -f "$tmp"
+exit "$rc"

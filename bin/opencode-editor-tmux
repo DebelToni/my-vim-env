@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+sock="${OPENCODE_NVIM_SERVER:-$HOME/.cache/nvim/opencode.sock}"
+win="${OPENCODE_NVIM_TMUX_WINDOW:-opencode-nvim}"
+
+mkdir -p "$(dirname "$sock")"
+
+# If you're not in tmux, fall back to normal nvim.
+if [[ -z "${TMUX-}" ]]; then
+  exec nvim "$@"
+fi
+
+current="$(tmux display-message -p '#S:#I')"
+
+# Ensure the nvim window exists (and runs a listening nvim).
+if ! tmux list-windows -F '#W' | grep -qx "$win"; then
+  tmux new-window -n "$win" "nvim --listen '$sock'"
+fi
+
+# Wait until the nvim server is actually ready to accept RPC.
+ready=0
+for _ in $(seq 1 200); do
+  if nvr --servername "$sock" --remote-expr "1" >/dev/null 2>&1; then
+    ready=1
+    break
+  fi
+  sleep 0.05
+done
+
+if [[ "$ready" -ne 1 ]]; then
+  echo "opencode-editor-tmux: nvim server not reachable at $sock" >&2
+  exit 1
+fi
+
+# Jump to the nvim window, open the prompt file(s) there, and wait until you close them.
+tmux select-window -t "$win" >/dev/null 2>&1 || true
+nvr --servername "$sock" --remote-wait-silent "$@"
+tmux select-window -t "$current" >/dev/null 2>&1 || true
