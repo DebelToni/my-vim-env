@@ -49,6 +49,9 @@ vim.o.shiftwidth = tabs  -- Number of spaces inserted when indenting
 -- 1) Load built-in defaults (cursor restore, shada, etc.)
 vim.cmd('runtime defaults.vim')
 
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
 -- 2) Optional: center the cursor on restore
 vim.api.nvim_create_autocmd('BufReadPost', {
 	pattern = '*',
@@ -73,3 +76,8 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
 	pattern = '*',
 	command = 'silent! loadview'
 })
+
+
+
+
+vim.keymap.set("i", "<C-l>", "copilot#Suggest()", { expr = true, silent = false })

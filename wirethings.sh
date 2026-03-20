@@ -20,6 +20,7 @@ declare -A links=(
   ["$DOTDIR/bin/fastc"]="$HOME/bin/fastc"
   ["$DOTDIR/bin/arxiv-src"]="$HOME/bin/arxiv-src"
   ["$DOTDIR/bin/opencode-editor-tmux"]="$HOME/bin/opencode-editor-tmux"
+  ["$DOTDIR/bin/opencode"]="$HOME/bin/opencode"
 )
 
 for src in "${!links[@]}"; do
@@ -33,8 +34,12 @@ executables=(
   "$DOTDIR/bin/fastc"
   "$DOTDIR/bin/arxiv-src"
   "$DOTDIR/bin/opencode-editor-tmux"
+  "$DOTDIR/bin/opencode"
 )
 
 for file in "${executables[@]}"; do
   [[ -f "$file" ]] && chmod +x "$file"
 done
+
+mkdir -p "$HOME/.opencode/bin"
+ln -sfv "$DOTDIR/bin/opencode" "$HOME/.opencode/bin/opencode"

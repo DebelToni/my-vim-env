@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo="${OPENCODE_HACK_REPO:-/Volumes/SSD/opencode-tui-hack}"
+state="${OPENCODE_HACK_STATE_DIR:-$HOME/.cache/opencode-hack}"
+stamp="$state/last_update_epoch"
+lock_hash_file="$state/last_bun_lock_hash"
+
+if [[ ! -d "$repo/.git" ]]; then
+  echo "opencode-hack: repo not found at '$repo'" >&2
+  echo "Expected the hack checkout at '/Volumes/SSD/opencode-tui-hack'." >&2
+  echo "Set OPENCODE_HACK_REPO to override the repo path." >&2
+  exit 1
+fi
+
+branch="${OPENCODE_HACK_BRANCH:-dev}"
+base="${OPENCODE_HACK_BASE:-origin/dev}"
+interval="${OPENCODE_HACK_UPDATE_INTERVAL:-43200}"
+expected_bun_version="$(
+  sed -n 's/.*"packageManager": "bun@\([^"]*\)".*/\1/p' "$repo/package.json" | head -n 1
+)"
+
+bun=""
+if [[ -n "${OPENCODE_HACK_BUN:-}" ]]; then
+  bun="$OPENCODE_HACK_BUN"
+elif [[ -x "$HOME/.bun/bin/bun" ]]; then
+  bun="$HOME/.bun/bin/bun"
+elif command -v bun >/dev/null 2>&1; then
+  bun="$(command -v bun)"
+fi
+
+if [[ ! -x "$bun" ]]; then
+  echo "opencode-hack: bun not executable at '$bun'" >&2
+  exit 1
+fi
+
+mkdir -p "$state"
+
+now="$(date +%s)"
+last="0"
+if [[ -f "$stamp" ]]; then
+  last="$(cat "$stamp" 2>/dev/null || echo 0)"
+fi
+
+if (( now - last > interval )); then
+  (
+    cd "$repo"
+    if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+      echo "opencode-hack: skipping auto-update because the repo has local changes" >&2
+    else
+      git fetch origin dev --quiet || true
+      git checkout "$branch" --quiet
+
+      if ! git rebase "$base" --autostash --quiet; then
+        git rebase --abort || true
+        echo "opencode-hack: rebase failed, using previous working commit" >&2
+      fi
+    fi
+
+    date +%s > "$stamp"
+  )
+fi
+
+if [[ -n "$expected_bun_version" ]]; then
+  current_bun_version="$("$bun" --version 2>/dev/null || true)"
+  if [[ -n "$current_bun_version" && "$current_bun_version" != "$expected_bun_version" ]]; then
+    echo "opencode-hack: warning: repo expects bun@$expected_bun_version, using bun@$current_bun_version" >&2
+  fi
+fi
+
+current_lock_hash=""
+if [[ -f "$repo/bun.lock" ]]; then
+  current_lock_hash="$(shasum -a 256 "$repo/bun.lock" | awk '{print $1}')"
+fi
+
+last_lock_hash=""
+if [[ -f "$lock_hash_file" ]]; then
+  last_lock_hash="$(cat "$lock_hash_file" 2>/dev/null || true)"
+fi
+
+if [[ ! -d "$repo/node_modules" || "$current_lock_hash" != "$last_lock_hash" ]]; then
+  (
+    cd "$repo"
+    echo "opencode-hack: syncing dependencies" >&2
+    lock_backup=""
+    if [[ -f "$repo/bun.lock" ]]; then
+      lock_backup="$(mktemp)"
+      cp "$repo/bun.lock" "$lock_backup"
+    fi
+
+    "$bun" install --frozen-lockfile >/dev/null
+
+    if [[ -n "$lock_backup" && -f "$repo/bun.lock" ]] && ! cmp -s "$repo/bun.lock" "$lock_backup"; then
+      cp "$lock_backup" "$repo/bun.lock"
+    fi
+
+    if [[ -f "$repo/bun.lock" ]]; then
+      shasum -a 256 "$repo/bun.lock" | awk '{print $1}' > "$lock_hash_file"
+    fi
+
+    if [[ -n "$lock_backup" ]]; then
+      rm -f "$lock_backup"
+    fi
+  )
+fi
+
+exec env OPENCODE_CWD="$PWD" OPENCODE_DISABLE_CHANNEL_DB=1 PATH="$HOME/.bun/bin:$PATH" "$bun" run --cwd "$repo/packages/opencode" --conditions=browser src/index.ts "$@"
