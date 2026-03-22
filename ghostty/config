@@ -1,0 +1,5 @@
+unfocused-split-opacity = 1
+theme = "Catppuccin Mocha"
+cursor-color =
+custom-shader-animation = always
+config-file = ./modes/active.conf

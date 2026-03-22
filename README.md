@@ -1,15 +1,10 @@
 # my-vim-env
-***just superior***
 
-This is a repository I use (will) to track my env config history because everything gets broken all the time by pressing a single key by accident.
+In this repo I have all the configs for all the tools I use in my favorite code edtior - the temrinal.
 
-I recently decided to start learning the Vim programming style with Neovim
-
-My crazy setup:
-(running everything in wsl2 ubuntu on my windows 10)
+This repo includes My setup for:
 - Neovim
 - Tmux
-- My custom AHK scripts to emulate Vim motions outside of terminal
 - my zshrc 
-
-I have all my configs for all the things listed in the repo folder on my wsl partition and to actually use them i have created symbolic links all over my system so it can access them - it is a super goofy solution but it works so why not.
+- Ghostty shaders 
+- custom bash scripts automating my life

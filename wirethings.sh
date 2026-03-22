@@ -12,21 +12,37 @@ declare -A links=(
   ["$DOTDIR/zsh/.zshrc"]="$HOME/.zshrc"
   ["$DOTDIR/tmux/.tmux.conf"]="$HOME/.tmux.conf"
   ["$DOTDIR/nvim"]="$HOME/.config/nvim"
+  ["$DOTDIR/ghostty"]="$HOME/.config/ghostty"
   ["$DOTDIR/zsh/.zshenv"]="$HOME/.zshenv"
   ["$DOTDIR/zsh/.zprofile"]="$HOME/.zprofile"
   ["$DOTDIR/zsh/.p10k.zsh"]="$HOME/.p10k.zsh"
-  ["$DOTDIR/tmux/"]="$HOME/.tmux"
+  ["$DOTDIR/tmux"]="$HOME/.tmux"
   ["$DOTDIR/bin/fast"]="$HOME/bin/fast"
   ["$DOTDIR/bin/fastc"]="$HOME/bin/fastc"
   ["$DOTDIR/bin/arxiv-src"]="$HOME/bin/arxiv-src"
   ["$DOTDIR/bin/opencode-editor-tmux"]="$HOME/bin/opencode-editor-tmux"
   ["$DOTDIR/bin/opencode"]="$HOME/bin/opencode"
+  ["$DOTDIR/bin/ghostty-switch-mode"]="$HOME/bin/ghostty-switch-mode"
 )
+
+link_path() {
+  local src="$1"
+  local dest="$2"
+
+  mkdir -p "$(dirname "$dest")"
+
+  if [[ -L "$dest" || -f "$dest" ]]; then
+    rm -f "$dest"
+  elif [[ -d "$dest" ]]; then
+    rm -rf "$dest"
+  fi
+
+  ln -sfnv "$src" "$dest"
+}
 
 for src in "${!links[@]}"; do
   dest="${links[$src]}"
-  mkdir -p "$(dirname "$dest")"
-  ln -sfv "$src" "$dest"
+  link_path "$src" "$dest"
 done
 
 executables=(
@@ -35,6 +51,7 @@ executables=(
   "$DOTDIR/bin/arxiv-src"
   "$DOTDIR/bin/opencode-editor-tmux"
   "$DOTDIR/bin/opencode"
+  "$DOTDIR/bin/ghostty-switch-mode"
 )
 
 for file in "${executables[@]}"; do
@@ -42,4 +59,4 @@ for file in "${executables[@]}"; do
 done
 
 mkdir -p "$HOME/.opencode/bin"
-ln -sfv "$DOTDIR/bin/opencode" "$HOME/.opencode/bin/opencode"
+link_path "$DOTDIR/bin/opencode" "$HOME/.opencode/bin/opencode"
