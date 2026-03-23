@@ -60,10 +60,7 @@ if [[ -n "$GHOSTTY_RESOURCES_DIR" ]]; then
   plugins+=(zsh-syntax-highlighting)
 fi
 
-# opencode editor:
-# export EDITOR="nvim"
-export OPENCODE_NVIM_SERVER="$HOME/.cache/nvim/opencode.pipe"
-export OPENCODE_NVIM_TMUX_WINDOW="o-nvim"
+# opencode editor - custom script:
 export EDITOR="$HOME/bin/opencode-editor-tmux"
 
 

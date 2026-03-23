@@ -104,4 +104,92 @@ if [[ ! -d "$repo/node_modules" || "$current_lock_hash" != "$last_lock_hash" ]];
   )
 fi
 
-exec env OPENCODE_CWD="$PWD" OPENCODE_DISABLE_CHANNEL_DB=1 PATH="$HOME/.bun/bin:$PATH" "$bun" run --cwd "$repo/packages/opencode" --conditions=browser src/index.ts "$@"
+tmux_has=0
+tmux_restore=0
+tmux_win=""
+tmux_auto=""
+tmux_allow=""
+tmux_name=""
+tmux_cmd=""
+tmux_reset=0
+if [[ -n "${TMUX:-}" ]] && command -v tmux >/dev/null 2>&1; then
+  tmux_has=1
+  tmux_t="${TMUX_PANE:-}"
+  if [[ -n "$tmux_t" ]]; then
+    tmux_win="$(tmux display-message -p -t "$tmux_t" "#{window_id}" 2>/dev/null || true)"
+    tmux_auto="$(tmux display-message -p -t "$tmux_t" "#{automatic-rename}" 2>/dev/null || true)"
+    tmux_allow="$(tmux display-message -p -t "$tmux_t" "#{allow-rename}" 2>/dev/null || true)"
+    tmux_name="$(tmux display-message -p -t "$tmux_t" "#{window_name}" 2>/dev/null || true)"
+    tmux_cmd="$(tmux display-message -p -t "$tmux_t" "#{pane_current_command}" 2>/dev/null || true)"
+  else
+    tmux_win="$(tmux display-message -p "#{window_id}" 2>/dev/null || true)"
+    tmux_auto="$(tmux display-message -p "#{automatic-rename}" 2>/dev/null || true)"
+    tmux_allow="$(tmux display-message -p "#{allow-rename}" 2>/dev/null || true)"
+    tmux_name="$(tmux display-message -p "#{window_name}" 2>/dev/null || true)"
+    tmux_cmd="$(tmux display-message -p "#{pane_current_command}" 2>/dev/null || true)"
+  fi
+
+  tmux_do=0
+  if [[ "$tmux_auto" == "1" || "$tmux_auto" == "on" ]]; then
+    tmux_do=1
+  elif [[ -n "$tmux_name" && -n "$tmux_cmd" && "$tmux_name" == "$tmux_cmd" ]]; then
+    tmux_do=1
+  elif [[ "$tmux_name" == "bash" || "$tmux_name" == "zsh" || "$tmux_name" == "sh" || "$tmux_name" == "fish" ]]; then
+    tmux_do=1
+  fi
+
+  if [[ "$tmux_do" == "1" ]]; then
+    tmux_restore=1
+    if [[ "$tmux_auto" != "1" && "$tmux_auto" != "on" ]]; then
+      tmux_reset=1
+    fi
+    name="${PWD##*/}"
+    if [[ -z "$name" ]]; then
+      name="/"
+    fi
+    if [[ -n "$tmux_win" ]]; then
+      tmux set-window-option -q -t "$tmux_win" automatic-rename off >/dev/null 2>&1 || true
+      tmux set-window-option -q -t "$tmux_win" allow-rename off >/dev/null 2>&1 || true
+      tmux rename-window -t "$tmux_win" "$name" >/dev/null 2>&1 || true
+    else
+      tmux set-window-option -q automatic-rename off >/dev/null 2>&1 || true
+      tmux set-window-option -q allow-rename off >/dev/null 2>&1 || true
+      tmux rename-window "$name" >/dev/null 2>&1 || true
+    fi
+  fi
+fi
+
+cleanup() {
+  if [[ "$tmux_has" == "1" && "$tmux_restore" == "1" ]]; then
+    auto="off"
+    if [[ "$tmux_auto" == "1" || "$tmux_auto" == "on" ]]; then
+      auto="on"
+    fi
+    allow="off"
+    if [[ "$tmux_allow" == "1" || "$tmux_allow" == "on" ]]; then
+      allow="on"
+    fi
+
+    if [[ -n "$tmux_win" ]]; then
+      if [[ "$tmux_reset" == "1" && -n "$tmux_name" ]]; then
+        tmux rename-window -t "$tmux_win" "$tmux_name" >/dev/null 2>&1 || true
+      fi
+      tmux set-window-option -q -t "$tmux_win" automatic-rename "$auto" >/dev/null 2>&1 || true
+      tmux set-window-option -q -t "$tmux_win" allow-rename "$allow" >/dev/null 2>&1 || true
+    else
+      if [[ "$tmux_reset" == "1" && -n "$tmux_name" ]]; then
+        tmux rename-window "$tmux_name" >/dev/null 2>&1 || true
+      fi
+      tmux set-window-option -q automatic-rename "$auto" >/dev/null 2>&1 || true
+      tmux set-window-option -q allow-rename "$allow" >/dev/null 2>&1 || true
+    fi
+  fi
+}
+
+trap cleanup EXIT INT TERM
+
+set +e
+env OPENCODE_CWD="$PWD" OPENCODE_DISABLE_CHANNEL_DB=1 PATH="$HOME/.bun/bin:$PATH" "$bun" run --cwd "$repo/packages/opencode" --conditions=browser src/index.ts "$@"
+code=$?
+set -e
+exit "$code"

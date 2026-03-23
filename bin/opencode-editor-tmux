@@ -1,21 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sock="${OPENCODE_NVIM_SERVER:-$HOME/.cache/nvim/opencode.sock}"
-win="${OPENCODE_NVIM_TMUX_WINDOW:-opencode-nvim}"
-
-mkdir -p "$(dirname "$sock")"
-
 # If you're not in tmux, fall back to normal nvim.
 if [[ -z "${TMUX-}" ]]; then
   exec nvim "$@"
 fi
 
+sanitize() {
+  local s="$1"
+  s="${s//[^[:alnum:]_.-]/-}"
+  s="${s#-}"
+  s="${s%-}"
+  [[ -n "$s" ]] || s="project"
+  printf '%s' "$s"
+}
+
 current="$(tmux display-message -p '#S:#I')"
+session="$(tmux display-message -p '#S')"
+
+project_root="$PWD"
+if git_root="$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null)"; then
+  project_root="$git_root"
+fi
+
+project="$(basename "$project_root")"
+project_key="$(sanitize "$project")"
+session_key="$(sanitize "$session")"
+project_short="${project_key:0:4}"
+[[ -n "$project_short" ]] || project_short="proj"
+
+win="${OPENCODE_NVIM_TMUX_WINDOW:-vim-$project_short}"
+sock="${OPENCODE_NVIM_SERVER:-$HOME/.cache/nvim/opencode-${session_key}-${project_key}.sock}"
+
+mkdir -p "$(dirname "$sock")"
 
 # Ensure the nvim window exists (and runs a listening nvim).
-if ! tmux list-windows -F '#W' | grep -qx "$win"; then
-  tmux new-window -n "$win" "nvim --listen '$sock'"
+if ! tmux list-windows -F '#W' | grep -Fxq "$win"; then
+  tmux new-window -a -t "$current" -n "$win" "nvim --listen '$sock'"
 fi
 
 # Wait until the nvim server is actually ready to accept RPC.

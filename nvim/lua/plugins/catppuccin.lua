@@ -1,4 +1,4 @@
-local transparent_mode = true
+local transparent_mode = false
 
 return {
 	{
