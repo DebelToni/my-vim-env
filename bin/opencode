@@ -23,6 +23,8 @@ expected_bun_version="$(
 bun=""
 if [[ -n "${OPENCODE_HACK_BUN:-}" ]]; then
   bun="$OPENCODE_HACK_BUN"
+elif [[ -x "$state/bun/bin/bun" ]]; then
+  bun="$state/bun/bin/bun"
 elif [[ -x "$HOME/.bun/bin/bun" ]]; then
   bun="$HOME/.bun/bin/bun"
 elif command -v bun >/dev/null 2>&1; then

@@ -375,7 +375,7 @@ vimouse(){
 
 drawit(){
 	cd ~/Documents/python/drawIT
-	source ~/v/py/bin/activate
+	source /Volumes/SSD/v/py/bin/activate
 	python drawit.py
 }
 
@@ -389,3 +389,12 @@ setopt HIST_REDUCE_BLANKS HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS
 
 # opencode
 export PATH=/Users/antonhristov/.opencode/bin:$PATH
+
+#bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# bun completions
+[ -s "/Users/antonhristov/.cache/opencode-hack/bun/_bun" ] && source "/Users/antonhristov/.cache/opencode-hack/bun/_bun"
+
+alias cdicloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/"
