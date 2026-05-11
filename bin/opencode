@@ -90,7 +90,7 @@ if [[ ! -d "$repo/node_modules" || "$current_lock_hash" != "$last_lock_hash" ]];
       cp "$repo/bun.lock" "$lock_backup"
     fi
 
-    "$bun" install --frozen-lockfile >/dev/null
+    "$bun" install --backend=copyfile --filter opencode --frozen-lockfile >/dev/null
 
     if [[ -n "$lock_backup" && -f "$repo/bun.lock" ]] && ! cmp -s "$repo/bun.lock" "$lock_backup"; then
       cp "$lock_backup" "$repo/bun.lock"

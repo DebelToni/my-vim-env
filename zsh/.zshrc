@@ -153,6 +153,48 @@ typst() {
   command typst "$@"
 }
 
+# Run "tectonic ..." and if it succeeds, open the compiled PDF.
+tectonic() {
+  command tectonic "$@" || return $?
+
+  local input=""
+  local outdir=""
+
+  for (( i=1; i <= $#; i++ )); do
+    case "${@[$i]}" in
+      --outdir|--out-dir)
+        outdir="${@[$((i+1))]}"
+        ;;
+      --outdir=*|--out-dir=*)
+        outdir="${@[$i]#*=}"
+        ;;
+      *.tex)
+        input="${@[$i]}"
+        ;;
+    esac
+  done
+
+  [[ -z "$input" ]] && return 0
+
+  local base="${input:t:r}"
+  local input_dir="${input:h}"
+  [[ "$input_dir" == "$input" ]] && input_dir="."
+
+  local candidates=()
+  [[ -n "$outdir" ]] && candidates+=("$outdir/$base.pdf")
+  candidates+=("$input_dir/$base.pdf" "./$base.pdf")
+
+  local pdf
+  for pdf in "$candidates[@]"; do
+    if [[ -f "$pdf" ]]; then
+      open "$pdf"
+      return 0
+    fi
+  done
+
+  return 0
+}
+
 
 typ() {
     if [ -z "$1" ]; then
@@ -269,6 +311,11 @@ alias cdu='cd ../'
 alias cduu='cd ../../'
 alias c='clear -x'
 alias update-giant='rm *.* && cp -r ~/Documents/ml/SUPER-GIANT/v1/model/*.* . && cp ~/Documents/ml/SUPER-GIANT/Model_Overview.md .'
+openf() {
+  local target
+  target=$(fzf) || return
+    open -- "$(dirname -- "$target")" || return
+}
 cdf() {
   local target
   # pick a file or directory
@@ -316,6 +363,7 @@ nvim() {
   case "$1" in
     zsh) command nvim ~/.zshrc ;;
     tmux) command nvim ~/.tmux.conf ;;
+    skhd) command nvim ~/.config/skhd/skhdrc; skhd --restart-service ;;
     *) command nvim "$@" ;;
   esac
 }
@@ -398,3 +446,28 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 [ -s "/Users/antonhristov/.cache/opencode-hack/bun/_bun" ] && source "/Users/antonhristov/.cache/opencode-hack/bun/_bun"
 
 alias cdicloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/"
+alias q="exit"
+
+mkcd() {
+  mkdir -p "$1"
+  cd "$1"
+}
+
+alias dv='deactivate'
+ac() {
+	if [[ -f "$1/bin/activate" ]]; then
+		source "$1/bin/activate"
+	else
+		echo "No virtual environment found in $1"
+	fi
+}
+
+# Personal Cloudflare R2 credentials
+if [[ -f "$HOME/.env-R2" ]]; then
+  source "$HOME/.env-R2"
+  export R2_ENDPOINT="${R2_ENDPOINT:-$S3_ENDPOINT_URL}"
+fi
+
+alias ow="cd wiki && o ."
+alias oc="o -c"
+alias oauth="opencode auth login && o -c"

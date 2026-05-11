@@ -13,6 +13,7 @@ declare -A links=(
   ["$DOTDIR/tmux/.tmux.conf"]="$HOME/.tmux.conf"
   ["$DOTDIR/nvim"]="$HOME/.config/nvim"
   ["$DOTDIR/ghostty"]="$HOME/.config/ghostty"
+  ["$DOTDIR/skhd"]="$HOME/.config/skhd"
   ["$DOTDIR/zsh/.zshenv"]="$HOME/.zshenv"
   ["$DOTDIR/zsh/.zprofile"]="$HOME/.zprofile"
   ["$DOTDIR/zsh/.p10k.zsh"]="$HOME/.p10k.zsh"

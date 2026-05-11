@@ -3,3 +3,22 @@ theme = "Catppuccin Mocha"
 cursor-color =
 custom-shader-animation = always
 config-file = ./modes/active.conf
+keybind = super+alt+arrow_up=text:\x1b[7721u
+keybind = super+alt+arrow_down=text:\x1b[7722u
+keybind = super+digit_1=text:\x1b[7731u
+keybind = super+1=text:\x1b[7731u
+keybind = super+digit_2=text:\x1b[7732u
+keybind = super+2=text:\x1b[7732u
+keybind = super+digit_3=text:\x1b[7733u
+keybind = super+3=text:\x1b[7733u
+keybind = super+digit_4=text:\x1b[7734u
+keybind = super+4=text:\x1b[7734u
+keybind = super+digit_5=text:\x1b[7735u
+keybind = super+5=text:\x1b[7735u
+keybind = super+digit_6=text:\x1b[7736u
+keybind = super+6=text:\x1b[7736u
+keybind = super+digit_7=text:\x1b[7737u
+keybind = super+7=text:\x1b[7737u
+keybind = super+digit_8=text:\x1b[7738u
+keybind = super+8=text:\x1b[7738u
+keybind = super+9=text:\x1b[7739u

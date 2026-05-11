@@ -14,33 +14,68 @@ EOF
 fi
 
 INPUT="$1"
-CACHE_ROOT="${ARXIV_CACHE_ROOT:-$HOME/.cache/super-giant/arxiv}"
+CACHE_ROOT="${ARXIV_CACHE_ROOT:-/tmp/arxiv-src}"
 mkdir -p "$CACHE_ROOT"
 
-ARXIV_ID="$(python3 - "$INPUT" <<'PY'
+PARSED="$(python3 - "$INPUT" <<'PY'
 import re
 import sys
+from urllib.parse import urlparse
 
 s = sys.argv[1].strip()
-patterns = [
-    r"(\d{4}\.\d{4,5}(?:v\d+)?)",          # modern IDs
-    r"([a-z\-]+(?:\.[A-Z]{2})?/\d{7}(?:v\d+)?)",  # legacy IDs
-]
-for p in patterns:
-    m = re.search(p, s)
-    if m:
-        print(m.group(1))
-        sys.exit(0)
+
+def normalize_pdf_suffix(value: str) -> str:
+    if value.endswith('.pdf'):
+        return value[:-4]
+    return value
+
+def parse_id(value: str) -> str | None:
+    patterns = [
+        r"(\d{4}\.\d{4,5}(?:v\d+)?)",
+        r"([a-z\-]+(?:\.[A-Z]{2})?/\d{7}(?:v\d+)?)",
+    ]
+    for p in patterns:
+        m = re.search(p, value)
+        if m:
+            return m.group(1)
+    return None
+
+parsed = urlparse(s)
+host = parsed.netloc.lower()
+path = parsed.path.strip('/')
+
+candidate = None
+if host.endswith('arxiv.org'):
+    parts = [part for part in path.split('/') if part]
+    if len(parts) >= 2 and parts[0] in {'abs', 'pdf', 'html', 'src', 'format'}:
+        candidate = normalize_pdf_suffix(parts[1])
+    elif parts:
+        candidate = normalize_pdf_suffix(parts[-1])
+else:
+    candidate = s
+
+arxiv_id = parse_id(candidate or '') or parse_id(s)
+if arxiv_id:
+    versionless = re.sub(r'v\d+$', '', arxiv_id)
+    print(arxiv_id)
+    print(versionless)
+    sys.exit(0)
 
 sys.exit(1)
 PY
 )"
+
+ARXIV_ID="$(printf '%s\n' "$PARSED" | sed -n '1p')"
+ARXIV_ID_VERSIONLESS="$(printf '%s\n' "$PARSED" | sed -n '2p')"
 
 if [[ -z "$ARXIV_ID" ]]; then
   echo "Could not parse arXiv ID from input: $INPUT" >&2
   exit 2
 fi
 
+ABS_URL="https://arxiv.org/abs/${ARXIV_ID}"
+PDF_URL="https://arxiv.org/pdf/${ARXIV_ID}.pdf"
+HTML_URL="https://arxiv.org/html/${ARXIV_ID_VERSIONLESS}"
 SRC_URL="https://arxiv.org/src/${ARXIV_ID}"
 TARBALL="${CACHE_ROOT}/${ARXIV_ID}.tar.gz"
 EXTRACT_DIR="${CACHE_ROOT}/${ARXIV_ID}"
@@ -94,6 +129,10 @@ PY
 )"
 
 echo "ARXIV_ID=$ARXIV_ID"
+echo "ARXIV_ID_VERSIONLESS=$ARXIV_ID_VERSIONLESS"
+echo "ABS_URL=$ABS_URL"
+echo "PDF_URL=$PDF_URL"
+echo "HTML_URL=$HTML_URL"
 echo "SRC_URL=$SRC_URL"
 echo "TARBALL=$TARBALL"
 echo "EXTRACT_DIR=$EXTRACT_DIR"
