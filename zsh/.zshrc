@@ -74,6 +74,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   alias bat="bat"
   alias codexa="codex --dangerously-bypass-approvals-and-sandbox"
   alias o="opencode"
+  alias p="pi"
   alias coc="~/.config/opencode"
   # alias cf='codex --dangerously-bypass-approvals-and-sandbox --model gpt-5.2 -c model_reasoning_effort=low exec'
 
@@ -468,6 +469,12 @@ if [[ -f "$HOME/.env-R2" ]]; then
   export R2_ENDPOINT="${R2_ENDPOINT:-$S3_ENDPOINT_URL}"
 fi
 
+if [[ -f "$HOME/.env-EXA" ]]; then
+  source "$HOME/.env-EXA"
+fi
+
 alias ow="cd wiki && o ."
 alias oc="o -c"
+alias pw="cd wiki && p ."
+alias pc="p -c"
 alias oauth="opencode auth login && o -c"
