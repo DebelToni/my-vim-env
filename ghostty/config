@@ -5,6 +5,9 @@ custom-shader-animation = always
 config-file = ./modes/active.conf
 keybind = super+alt+arrow_up=text:\x1b[7721u
 keybind = super+alt+arrow_down=text:\x1b[7722u
+# Shift+Enter for Pi inside tmux without enabling tmux extended-keys globally.
+# Ghostty emits a private CSI-u sequence; tmux translates it to Ctrl-J for Pi.
+keybind = shift+enter=text:\x1b[13;2u
 keybind = super+digit_1=text:\x1b[7731u
 keybind = super+1=text:\x1b[7731u
 keybind = super+digit_2=text:\x1b[7732u

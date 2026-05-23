@@ -18,6 +18,15 @@ sanitize() {
 current="$(tmux display-message -p '#S:#I')"
 session="$(tmux display-message -p '#S')"
 
+pi_file=""
+for arg in "$@"; do
+  case "$arg" in
+    /tmp/pi-editor-*.pi.md|/var/folders/*/T/pi-editor-*.pi.md)
+      pi_file="$arg"
+      ;;
+  esac
+done
+
 project_root="$PWD"
 if git_root="$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null)"; then
   project_root="$git_root"
@@ -54,7 +63,61 @@ if [[ "$ready" -ne 1 ]]; then
   exit 1
 fi
 
+if [[ -n "$pi_file" ]]; then
+  token="pi-editor-done-$(date +%s)-$$"
+  hook_file="${pi_file}.hook.vim"
+  close_marker="${pi_file}.close-window"
+  augroup="PiEditorDone$(printf '%s' "$token" | tr -cd '[:alnum:]')"
+  cat > "$hook_file" <<EOF
+function! s:PiEditorDone() abort
+  silent! call system(['tmux', 'wait-for', '-S', '$token'])
+endfunction
+augroup $augroup
+  autocmd! * <buffer>
+  autocmd BufUnload,BufDelete,BufWipeout <buffer> ++once call <SID>PiEditorDone()
+  autocmd VimLeavePre * ++once call <SID>PiEditorDone()
+augroup END
+silent! cunabbrev q
+silent! cunabbrev wq
+cnoreabbrev <expr> q (getcmdtype() == ':' && getcmdline() ==# 'q' && expand('%:p') =~# '/pi-editor-.*\\.pi\\.md$' ? 'bd!' : 'q')
+cnoreabbrev <expr> wq (getcmdtype() == ':' && getcmdline() ==# 'wq' && expand('%:p') =~# '/pi-editor-.*\\.pi\\.md$' ? (writefile(['close'], '$close_marker') == 0 ? 'w ' . nr2char(124) . ' bd' : 'w ' . nr2char(124) . ' bd') : 'wq')
+EOF
+  tmux select-window -t "$win" >/dev/null 2>&1 || true
+  nvr --servername "$sock" --remote-silent "$pi_file" -c "source $hook_file"
+
+  # Wait for the editor buffer to close, but do not hang forever if the tmux
+  # window/server was killed instead of exiting through Vim commands.
+  tmux wait-for "$token" &
+  wait_pid=$!
+  while kill -0 "$wait_pid" 2>/dev/null; do
+    if ! tmux list-windows -F '#W' 2>/dev/null | grep -Fxq "$win"; then
+      kill "$wait_pid" 2>/dev/null || true
+      wait "$wait_pid" 2>/dev/null || true
+      break
+    fi
+    if ! nvr --servername "$sock" --remote-expr "1" >/dev/null 2>&1; then
+      kill "$wait_pid" 2>/dev/null || true
+      wait "$wait_pid" 2>/dev/null || true
+      break
+    fi
+    sleep 0.2
+  done
+  wait "$wait_pid" 2>/dev/null || true
+
+  tmux select-window -t "$current" >/dev/null 2>&1 || true
+  if [[ -f "$close_marker" ]]; then
+    rm -f "$close_marker"
+    tmux kill-window -t "$win" >/dev/null 2>&1 || true
+  fi
+  rm -f "$hook_file"
+  exit 0
+fi
+
 # Jump to the nvim window, open the prompt file(s) there, and wait until you close them.
 tmux select-window -t "$win" >/dev/null 2>&1 || true
+set +e
 nvr --servername "$sock" --remote-wait-silent "$@"
+status=$?
+set -e
 tmux select-window -t "$current" >/dev/null 2>&1 || true
+exit "$status"

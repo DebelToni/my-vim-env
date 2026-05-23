@@ -312,6 +312,11 @@ alias cdu='cd ../'
 alias cduu='cd ../../'
 alias c='clear -x'
 alias update-giant='rm *.* && cp -r ~/Documents/ml/SUPER-GIANT/v1/model/*.* . && cp ~/Documents/ml/SUPER-GIANT/Model_Overview.md .'
+lsf() {
+  local target
+  target=$(fzf) || return
+    ls -- "$(dirname -- "$target")" || return
+}
 openf() {
   local target
   target=$(fzf) || return
@@ -475,6 +480,6 @@ fi
 
 alias ow="cd wiki && o ."
 alias oc="o -c"
-alias pw="cd wiki && p ."
+alias pw="cd wiki && p"
 alias pc="p -c"
 alias oauth="opencode auth login && o -c"
