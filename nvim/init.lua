@@ -7,7 +7,7 @@ vim.opt.number = true
 
 --Todo: make file for require
 require("config.lazy")
-require("config.cylliric")
+require("config.bulgarian")
 require("config.myscripts.code_conceal")
 require("config.myscripts.code_hide")
 require("config.myscripts.removecomments")
