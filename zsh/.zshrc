@@ -370,6 +370,7 @@ nvim() {
     zsh) command nvim ~/.zshrc ;;
     tmux) command nvim ~/.tmux.conf ;;
     skhd) command nvim ~/.config/skhd/skhdrc; skhd --restart-service ;;
+    pi) command nvim ~/.pi/agent/AGENTS.md ;;
     *) command nvim "$@" ;;
   esac
 }
@@ -478,8 +479,33 @@ if [[ -f "$HOME/.env-EXA" ]]; then
   source "$HOME/.env-EXA"
 fi
 
-alias ow="cd wiki && o ."
+alias ow="cd ~/Documents/wiki && o ."
 alias oc="o -c"
-alias pw="cd wiki && p"
-alias pc="p -c"
+alias pw="cd ~/Documents/wiki && p"
+function pc() {
+  local wiki="$HOME/Documents/wiki"
+  local cwd="$(pwd -P)"
+  if [[ "$cwd" == "$wiki" && -n "$TMUX" ]]; then
+    local title="$(tmux display-message -p '#W' 2>/dev/null)"
+    title="${title#✓ }"
+    local session="$(python3 - "$title" <<'PY'
+import json, pathlib, sys
+name = sys.argv[1].strip()
+path = pathlib.Path.home() / '.pi/agent/wiki-session-titles.json'
+try:
+    data = json.loads(path.read_text())
+    session = data.get('titles', {}).get(name, {}).get('session')
+    if session and pathlib.Path(session).exists():
+        print(session)
+except Exception:
+    pass
+PY
+)"
+    if [[ -n "$session" ]]; then
+      pi --session "$session"
+      return
+    fi
+  fi
+  pi -c "$@"
+}
 alias oauth="opencode auth login && o -c"

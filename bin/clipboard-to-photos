@@ -1,0 +1,48 @@
+#!/bin/zsh
+set -euo pipefail
+
+notify() {
+  /usr/bin/osascript -e "display notification \"$1\" with title \"Clipboard to Photos\"" >/dev/null 2>&1 || true
+}
+
+out="${TMPDIR:-/tmp}/clipboard-to-photos-$(date +%Y%m%d-%H%M%S).png"
+
+if ! OUT="$out" /usr/bin/osascript -l JavaScript <<'JXA'
+ObjC.import('AppKit')
+ObjC.import('Foundation')
+
+const out = ObjC.unwrap($.NSProcessInfo.processInfo.environment.objectForKey('OUT'))
+const pb = $.NSPasteboard.generalPasteboard
+const img = $.NSImage.alloc.initWithPasteboard(pb)
+
+if (!img || !img.isValid) {
+  throw new Error('Clipboard does not contain an image')
+}
+
+const tiff = img.TIFFRepresentation
+const rep = $.NSBitmapImageRep.imageRepWithData(tiff)
+const png = rep.representationUsingTypeProperties(4, $.NSDictionary.dictionary) // 4 = PNG
+
+if (!png || !png.writeToFileAtomically($(out), true)) {
+  throw new Error('Could not write clipboard image')
+}
+JXA
+then
+  notify "No image found in clipboard"
+  exit 1
+fi
+
+if /usr/bin/osascript - "$out" <<'APPLESCRIPT'
+on run argv
+  set f to POSIX file (item 1 of argv) as alias
+  tell application "Photos"
+    import {f} skip check duplicates true
+  end tell
+end run
+APPLESCRIPT
+then
+  notify "Imported clipboard image"
+else
+  notify "Photos import failed"
+  exit 1
+fi

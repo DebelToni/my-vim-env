@@ -2,6 +2,21 @@ ctrl - 1 : open -a Safari
 ctrl - 2 : open -a Ghostty
 ctrl - 3 : open -a Finder
 ctrl - 4 : open -a Notes
-ctrl - 4 : open -a Preview
+ctrl - 5 : open -a Preview
 ctrl - 9 : open -a Discord
 ctrl - 0 : open -a Viber
+
+# option+` -> cmd+shift+]
+alt - 0x32 : /opt/homebrew/bin/skhd -k "cmd + shift - 0x1E"
+
+# Import the current clipboard image into Photos. Near macOS screenshots (cmd+shift+3/4/5); ctrl = clipboard-oriented.
+ctrl + cmd + shift - 6 : /opt/homebrew/bin/clipboard-to-photos
+
+# Acer RG271 external monitor brightness over DDC/CI via m1ddc.
+f1              : /Users/antonhristov/.config/scripts/acer-brightness down
+f2              : /Users/antonhristov/.config/scripts/acer-brightness up
+ctrl + alt - 1  : /Users/antonhristov/.config/scripts/acer-brightness down
+ctrl + alt - 2  : /Users/antonhristov/.config/scripts/acer-brightness up
+
+# ctrl+option+c -> left mouse click at current pointer position.
+ctrl + alt - c : /Users/antonhristov/.config/scripts/left-click

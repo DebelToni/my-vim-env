@@ -24,6 +24,7 @@ declare -A links=(
   ["$DOTDIR/bin/opencode-editor-tmux"]="$HOME/bin/opencode-editor-tmux"
   ["$DOTDIR/bin/opencode"]="$HOME/bin/opencode"
   ["$DOTDIR/bin/ghostty-switch-mode"]="$HOME/bin/ghostty-switch-mode"
+  ["$DOTDIR/bin/clipboard-to-photos"]="$HOME/bin/clipboard-to-photos"
 )
 
 link_path() {
@@ -53,6 +54,7 @@ executables=(
   "$DOTDIR/bin/opencode-editor-tmux"
   "$DOTDIR/bin/opencode"
   "$DOTDIR/bin/ghostty-switch-mode"
+  "$DOTDIR/bin/clipboard-to-photos"
 )
 
 for file in "${executables[@]}"; do
