@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -u
+trigger="${1:-unknown}"
+log="${TMUX_COPY_MODE_LOG:-$HOME/.tmux-copy-mode.log}"
+now="$(date '+%Y-%m-%dT%H:%M:%S%z')"
+fmt='session=#{session_name} window=#{window_index}:#{window_name} pane=#{pane_id} mode=#{pane_mode} cmd=#{pane_current_command} pid=#{pane_pid} alt=#{alternate_on} mouse=#{mouse_any_flag} history=#{history_size}/#{history_limit} client=#{client_name} tty=#{client_tty} key_table=#{client_key_table}'
+info="$(tmux display-message -p "$fmt" 2>/dev/null || true)"
+printf '%s trigger=%s %s\n' "$now" "$trigger" "$info" >> "$log"
