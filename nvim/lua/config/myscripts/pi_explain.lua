@@ -496,6 +496,9 @@ local function start_job(session)
 	end
 
 	local args = {
+		"env",
+		"-u", "TMUX",
+		"-u", "TMUX_PANE",
 		M.config.command,
 		"--mode", "rpc",
 		"--no-session",
