@@ -105,3 +105,26 @@ vim.api.nvim_set_keymap("n", "<leader>n", ":norm ", { noremap = true, silent = t
 vim.api.nvim_set_keymap("n", "<leader>gi", ":Gitsigns ", { noremap = true, silent = true, desc = "norm" })
 
 vim.api.nvim_set_keymap("n", "<leader>w", "<cmd>w | bd<CR>", { noremap = true, silent = true, desc = "norm" })
+
+vim.api.nvim_create_user_command("Html", function()
+	local path = vim.api.nvim_buf_get_name(0)
+	if path == "" or path:lower():sub(-3) ~= ".md" then
+		vim.notify(":html requires a saved .md buffer", vim.log.levels.ERROR)
+		return
+	end
+
+	vim.cmd("silent write")
+	vim.notify("Publishing Markdown…")
+	vim.system({ "/Users/antonhristov/Documents/wiki/serve_markdown.py", path }, { text = true }, function(result)
+		vim.schedule(function()
+			if result.code == 0 then
+				vim.notify(vim.trim(result.stdout) .. " (copied)")
+			else
+				vim.notify(vim.trim(result.stderr), vim.log.levels.ERROR)
+			end
+		end)
+	end)
+end, {})
+
+-- Neovim requires user commands to start uppercase; this makes :html invoke :Html.
+vim.cmd([[cnoreabbrev <expr> html getcmdtype() ==# ':' && getcmdline() ==# 'html' ? 'Html' : 'html']])

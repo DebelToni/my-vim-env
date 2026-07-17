@@ -509,3 +509,4 @@ PY
   pi -c "$@"
 }
 alias oauth="opencode auth login && o -c"
+alias jarvis-post-tts="$HOME/.jarvis/app/bin/jarvis-post-tts"
