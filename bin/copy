@@ -1,0 +1,51 @@
+#!/usr/bin/env sh
+set -eu
+
+if [ -t 0 ]; then
+  echo "usage: command | copy" >&2
+  exit 2
+fi
+
+tmp=$(mktemp "${TMPDIR:-/tmp}/copy.XXXXXX")
+trap 'rm -f "$tmp"' EXIT HUP INT TERM
+cat >"$tmp"
+
+pbcopy_ok=0
+osc52_ok=0
+
+if command -v pbcopy >/dev/null 2>&1 && pbcopy <"$tmp"; then
+  pbcopy_ok=1
+fi
+
+# tmux -w sends its paste buffer to the attached client with OSC 52. This
+# survives both tmux and SSH without writing the escape sequence to stdout.
+if [ -n "${TMUX:-}" ] && command -v tmux >/dev/null 2>&1; then
+  if tmux load-buffer -w "$tmp" >/dev/null 2>&1; then
+    osc52_ok=1
+  fi
+fi
+
+emit_osc52() {
+  if [ -n "${TMUX:-}" ]; then
+    {
+      printf '\033Ptmux;\033\033]52;c;'
+      base64 <"$tmp" | tr -d '\r\n'
+      printf '\a\033\\'
+    } >/dev/tty
+  else
+    {
+      printf '\033]52;c;'
+      base64 <"$tmp" | tr -d '\r\n'
+      printf '\a'
+    } >/dev/tty
+  fi
+}
+
+if [ "$osc52_ok" -eq 0 ] && emit_osc52 2>/dev/null; then
+  osc52_ok=1
+fi
+
+if [ "$pbcopy_ok" -eq 0 ] && [ "$osc52_ok" -eq 0 ]; then
+  echo "copy: neither pbcopy nor OSC 52 is available" >&2
+  exit 1
+fi
