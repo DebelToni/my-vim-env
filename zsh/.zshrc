@@ -482,31 +482,6 @@ fi
 alias ow="cd ~/Documents/wiki && o ."
 alias oc="o -c"
 alias pw="cd ~/Documents/wiki && p"
-function pc() {
-  local wiki="$HOME/Documents/wiki"
-  local cwd="$(pwd -P)"
-  if [[ "$cwd" == "$wiki" && -n "$TMUX" ]]; then
-    local title="$(tmux display-message -p '#W' 2>/dev/null)"
-    title="${title#✓ }"
-    local session="$(python3 - "$title" <<'PY'
-import json, pathlib, sys
-name = sys.argv[1].strip()
-path = pathlib.Path.home() / '.pi/agent/wiki-session-titles.json'
-try:
-    data = json.loads(path.read_text())
-    session = data.get('titles', {}).get(name, {}).get('session')
-    if session and pathlib.Path(session).exists():
-        print(session)
-except Exception:
-    pass
-PY
-)"
-    if [[ -n "$session" ]]; then
-      pi --session "$session"
-      return
-    fi
-  fi
-  pi -c "$@"
-}
+alias pc="pi -c"
 alias oauth="opencode auth login && o -c"
 alias jarvis-post-tts="$HOME/.jarvis/app/bin/jarvis-post-tts"
