@@ -4,7 +4,7 @@
 [[ -f ~/.zprofile ]] && source ~/.zprofile
 export ZSH="$HOME/.oh-my-zsh"
 
-# Auto-attach to tmux session "AI" when SSH'ing into this macOS host.
+# Auto-attach to the most recently used tmux session when SSH'ing into this macOS host.
 # - interactive shells only
 # - only over SSH
 # - don't nest tmux inside tmux
@@ -13,7 +13,7 @@ if [[ "$OSTYPE" == "darwin"* ]] \
   && [[ -n "${SSH_CONNECTION}${SSH_CLIENT}${SSH_TTY}" ]] \
   && [[ -z "${TMUX}" ]]; then
   if command -v tmux >/dev/null 2>&1; then
-    tmux attach -t AI 2>/dev/null || tmux new -s AI
+    tmux attach 2>/dev/null || tmux new
   fi
 fi
 
@@ -154,19 +154,32 @@ typst() {
   command typst "$@"
 }
 
-# Run "tectonic ..." and if it succeeds, open the compiled PDF.
+# Run "tectonic ..." and if it succeeds, open the PDF; --ipad hosts it instead.
 tectonic() {
-  command tectonic "$@" || return $?
+  local ipad=0
+  local -a tectonic_args=()
+  local arg
+  for arg in "$@"; do
+    if [[ "$arg" == "--ipad" ]]; then
+      ipad=1
+    else
+      tectonic_args+=("$arg")
+    fi
+  done
+
+  (( ipad )) && print -u2 -- "tectonic --ipad: compiling..."
+  command tectonic "${tectonic_args[@]}" || return $?
+  set -- "${tectonic_args[@]}"
 
   local input=""
   local outdir=""
-
+  local i
   for (( i=1; i <= $#; i++ )); do
     case "${@[$i]}" in
-      --outdir|--out-dir)
+      -o|--outdir|--out-dir)
         outdir="${@[$((i+1))]}"
         ;;
-      --outdir=*|--out-dir=*)
+      -o=*|--outdir=*|--out-dir=*)
         outdir="${@[$i]#*=}"
         ;;
       *.tex)
@@ -185,15 +198,91 @@ tectonic() {
   [[ -n "$outdir" ]] && candidates+=("$outdir/$base.pdf")
   candidates+=("$input_dir/$base.pdf" "./$base.pdf")
 
-  local pdf
-  for pdf in "$candidates[@]"; do
-    if [[ -f "$pdf" ]]; then
-      open "$pdf"
-      return 0
+  local pdf=""
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -f "$candidate" ]]; then
+      pdf="$candidate"
+      break
     fi
   done
 
-  return 0
+  if [[ -z "$pdf" ]]; then
+    (( ipad )) && print -u2 -- "tectonic --ipad: compiled PDF not found"
+    (( ipad )) && return 1
+    return 0
+  fi
+
+  if (( ! ipad )); then
+    open "$pdf"
+    return 0
+  fi
+
+  print -u2 -- "tectonic --ipad: starting PDF server..."
+  local cache_dir="$HOME/.cache/tectonic-ipad"
+  local port=43127
+  local marker="tectonic-ipad-server"
+  command mkdir -p "$cache_dir" || return 1
+  print -r -- "$marker" > "$cache_dir/.health"
+
+  local hash
+  hash=$(command openssl rand -hex 16) || return 1
+  local hosted_pdf="$cache_dir/$hash.pdf"
+  command cp "$pdf" "$hosted_pdf" || return 1
+
+  local ready=0
+  if [[ "$(command curl --noproxy '*' -fsS --max-time 1 "http://127.0.0.1:$port/.health" 2>/dev/null)" == "$marker" ]]; then
+    ready=1
+  else
+    command nohup /Volumes/SSD/v/py/bin/python -m http.server "$port" \
+      --bind 127.0.0.1 --directory "$cache_dir" \
+      > "$cache_dir/server.log" 2>&1 < /dev/null &!
+    for (( i=0; i < 20; i++ )); do
+      if [[ "$(command curl --noproxy '*' -fsS --max-time 1 "http://127.0.0.1:$port/.health" 2>/dev/null)" == "$marker" ]]; then
+        ready=1
+        break
+      fi
+      command sleep 0.1
+    done
+  fi
+
+  if (( ! ready )); then
+    print -u2 -- "tectonic --ipad: PDF server failed to start; see $cache_dir/server.log"
+    return 1
+  fi
+
+  local route="/$hash"
+  local backend="http://127.0.0.1:$port/$hash.pdf"
+  local url="https://mac.dzo-opah.ts.net$route"
+  print -u2 -- "tectonic --ipad: publishing $url..."
+  local serve_error
+  serve_error=$(command tailscale serve --bg --yes --https=443 \
+    --set-path="$route" "$backend" 2>&1) || {
+      print -u2 -- "tectonic --ipad: $serve_error"
+      return 1
+    }
+
+  print -u2 -- "tectonic --ipad: verifying HTTPS..."
+  local check_file
+  check_file=$(command mktemp /tmp/tectonic-ipad.XXXXXX) || return 1
+  local verified=0
+  for (( i=0; i < 10; i++ )); do
+    if command curl --noproxy '*' -fsS --connect-timeout 1 --max-time 2 "$url" -o "$check_file" 2>/dev/null \
+      && command cmp -s "$hosted_pdf" "$check_file"; then
+      verified=1
+      break
+    fi
+    command sleep 0.25
+  done
+  command rm -f "$check_file"
+
+  if (( ! verified )); then
+    print -u2 -- "tectonic --ipad: HTTPS verification failed for $url"
+    return 1
+  fi
+
+  print -rn -- "$url" | command copy || return 1
+  print -r -- "$url"
 }
 
 
@@ -305,7 +394,7 @@ eza-ls() {
 alias ls='eza-ls'
 
 alias inv='nvim $(fzf -m --preview="bat --color=always {}")'
-alias py='python3'
+alias py='/Volumes/SSD/v/py/bin/python'
 alias lgit='lazygit'
 alias ldocker='lazydocker'
 alias cdu='cd ../'
@@ -479,9 +568,11 @@ if [[ -f "$HOME/.env-EXA" ]]; then
   source "$HOME/.env-EXA"
 fi
 
-alias ow="cd ~/Documents/wiki && o ."
-alias oc="o -c"
+# alias ow="cd ~/Documents/wiki && o ."
+# alias oc="o -c"
 alias pw="cd ~/Documents/wiki && p"
 alias pc="pi -c"
 alias oauth="opencode auth login && o -c"
 alias jarvis-post-tts="$HOME/.jarvis/app/bin/jarvis-post-tts"
+alias ipad="cd ~/ && ./connect_ipad.sh"
+alias pm="cd ~/ && pi --session 019fa950-176c-79c0-b55e-cf44f03503db"

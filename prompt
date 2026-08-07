@@ -1,0 +1,2 @@
+i have a tmux <ldear>g command that opens in a browser the repo i a currently in and is smart - if its cloned with http or ssh it resolves it. Make it detect if i am on ssh and if so it just OCS52 gives me the link to paste into the browser instead of opening browser on my mac at home. If its possible shuv it all into a single bash command
+tmux/.tmux.conf:226
